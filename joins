@@ -1,0 +1,512 @@
+====================================
+COMMAND: SELECT PA.PSG_ID,PA.NAME FROM PASSENGER PA INNER JOIN PASSENGER P ON P.PSG_ID=101;
+
+    PSG_ID NAME
+---------- -------------------------
+       102 SHREE
+       101 nila
+       103 nila
+       104 riya
+       108 REENA
+       109 maggi
+
+6 rows selected.
+----------------------------------------------------------------------------------------------------------------------------
+PERFORM SELF JOIN ON PAYMENT TABLE:
+===================================
+COMMAND:SELECT P.BILL_ID,P.PAY_DATE,P.AMOUNT FROM PAYMENT P INNER JOIN PAYMENT PA ON PA.BILL_ID=500;
+
+   BILL_ID PAY_DATE  AMOUNT
+---------- --------- --------------------
+       601 29-JUL-23 12000
+       700 21-JUN-23 14000
+       800 24-MAR-23 26000
+       500 25-MAR-23 30000
+------------------------------------------------------------------------------------------------------------------------------
+
+[21bcs035@mepcolinux ex5]$
+[21bcs035@mepcolinux ex5]$cat joins.txt
+                                                                                        EXERCISE NO:05
+                                                                                        ===============
+                                                                                 SET OPERATIONS AND JOINS
+                                                                                 =========================
+NAME:M.YOGAA SHREE
+ROLL:21BCS035
+
+THE DATA IN THE TABLES:
+========================
+                                                                                        PASSENGER
+                                                                                        ==========
+ select * from passenger;
+
+    PSG_ID NAME                         PSG_PWD ADDRESS              PSG_EMAIL            PSG_DOB   GE
+---------- ------------------------- ---------- -------------------- -------------------- --------- --
+       102 SHREE                           2478 Tuti                 imaya@gmail.com      12-JUL-90 fm
+       101 nila                            4444 Tvl                  nila@gmail.com       17-JUN-99 m
+       103 rafi                           15554 Vnr                  rafi@gmail.com       19-MAR-96 fm
+       104 riya                           17978 madurai              riya@gmail.com       29-JUL-04 fm
+
+                                                                                        TICKET
+                                                                                        =======
+ TICKET_ID AMOUNT          DATE_BOOK DATE_CANC NUM_SEATS  BOOK_ID    CANCEL_ID   FLIGHT_ID    BILL_ID     PSG_ID
+---------- --------------- --------- --------- ---------- ---------- ---------- ---------- ---------- ----------
+       501 5000            04-MAR-23           4          701                          501        800        101
+       502 2000            05-MAR-23           2          702                          502        500        102
+       503 8000            06-MAR-23           5          703                          501        700        103
+       504 10000           07-MAR-23           6          704                          502        601        104
+
+                                                                                        PAYMENT
+                                                                                        ========
+   BILL_ID PAY_DATE  AMOUNT                 TRANS_ID  TICKET_ID
+---------- --------- -------------------- ---------- ----------
+       601 29-JUL-23 12000                       707        401
+       700 21-JUN-23 14000                       700        102
+       800 24-MAR-23 26000                       600        103
+       500 25-MAR-23 30000                       200        104
+
+----------------------------------------------------------------------------------------------------------------------
+                                                                                SET OPERATIONS
+                                                                                ===============
+                                                                                ****************
+                                                                                        UNION
+                                                                                *****************
+SELECT ALL THE PASSENGERS WHOSE  ADDRESS IS TVL OR GENDER IS FM:
+================================================================
+
+COMMAND:SELECT *FROM PASSENGER WHERE ADDRESS='TVL' UNION SELECT * FROM PASSENGER WHERE GENDER='fm';
+
+    PSG_ID NAME                         PSG_PWD ADDRESS              PSG_EMAIL            PSG_DOB   GE
+---------- ------------------------- ---------- -------------------- -------------------- --------- --
+       102 SHREE                           2478 Tuti                 imaya@gmail.com      12-JUL-90 fm
+       103 rafi                           15554 Vnr                  rafi@gmail.com       19-MAR-96 fm
+       104 riya                           17978 madurai              riya@gmail.com       29-JUL-04 fm
+
+SELECT THE PSG_ID FROM PASSENGER AND TICKET:
+============================================
+
+COMMAND: SELECT PSG_ID FROM TICKET UNION SELECT PSG_ID FROM PASSENGER;
+
+    PSG_ID
+----------
+       101
+       102
+       103
+       104
+
+                                                                                **********************************
+                                                                                                UNION   ALL
+                                                                                **********************************
+
+SELECT ALL THE PASSENGERS WHOSE ADDRESS IS VNR OR GENDER IS FM:
+==============================================================
+
+COMMAND: SELECT *FROM PASSENGER WHERE ADDRESS='vnr' UNION ALL SELECT *FROM PASSENGER WHERE GENDER='fm';
+
+    PSG_ID NAME                         PSG_PWD ADDRESS              PSG_EMAIL            PSG_DOB   GE
+---------- ------------------------- ---------- -------------------- -------------------- --------- --
+       102 SHREE                           2478 Tuti                 imaya@gmail.com      12-JUL-90 fm
+       103 rafi                           15554 Vnr                  rafi@gmail.com       19-MAR-96 fm
+       104 riya                           17978 madurai              riya@gmail.com       29-JUL-04 fm
+
+SELECT THE PSG_ID FROM PASSENGER AND PSG_ID FROM TICKET:
+========================================================
+
+COMMAND:SELECT PSG_ID FROM PASSENGER UNION ALL SELECT PSG_ID FROM TICKET;
+
+    PSG_ID
+----------
+       101
+       102
+       103
+       104
+       101
+       102
+       103
+       104
+
+8 rows selected.
+
+DISPLAY THE ID OF THE TICKET WHICH THE BILL IS PAYED :
+===========================================
+
+COMMAND: SELECT BILL_ID FROM TICKET INTERSECT SELECT BILL_ID FROM PAYMENT;
+
+   BILL_ID
+----------
+       800
+       500
+       700
+       601
+-------------------------------------------------------------------------------------------------
+                                        *************************
+                                                INTERSECT ALL
+                                        *************************
+DISPLAY THE PASSENGERS WHO BOOKED TICKET:
+=========================================
+COMMAND:SELECT PSG_ID FROM TICKET INTERSECT ALL SELECT PSG_ID FROM PASSENGER;
+
+    PSG_ID
+----------
+       101
+       102
+       103
+       104
+
+DISPLAY THE PASSENGERS WHOSE ADDRESS ENDS WITH 'I' AND WHO BOOKED TICKETS:
+==========================================================================
+COMMAND:select psg_id from passenger where address like '%i' intersect all select psg_id from ticket;
+
+    PSG_ID
+----------
+       102
+       104
+
+--------------------------------------------------------------------------------------------------
+                                                *****************
+                                                        EXPECT
+                                                *****************
+DISPLAY THE PASSENGER ID WHO HAS NOT BOOKED ANY TICKETS:
+========================================================
+
+COMMAND: SELECT PSG_ID FROM PASSENGER EXCEPT SELECT PSG_ID FROM TICKET;
+
+    PSG_ID
+----------
+       108
+       109
+
+---------------------------------------------------------------------------------------------------
+                                                ****************
+                                                        EXPECT ALL
+                                                ****************
+DISPLAY THE PASSENGERS WHO HAVE NOT BOOKED ANY TICKETS:
+=======================================================
+COMMAND: SELECT PSG_ID FROM PASSENGER EXCEPT ALL SELECT PSG_ID FROM TICKET;
+
+    PSG_ID
+----------
+       108
+       109
+-----------------------------------------------------------------------------------------------------
+
+                                                JOIN OPERATIONS
+                                        ***************************
+                                                1.CARTESIAN PRODUCT
+                                        ***************************
+1.DISPLAY ALL DETAILS FROM PASSENGER AND TICKET FOR THE PASSENGERS WHO BOOKED THE TICKET:
+========================================================================================
+COMMAND: SELECT * FROM PASSENGER,TICKET WHERE PASSENGER.PSG_ID=TICKET.PSG_ID;
+
+    PSG_ID NAME                         PSG_PWD ADDRESS              PSG_EMAIL            PSG_DOB   GE  TICKET_ID AMOUNT          DATE_BOOK DATE_CANC NUM_SEATS  BOOK_ID    CANCEL_ID   FLIGHT_ID    BILL_ID     PSG_ID
+---------- ------------------------- ---------- -------------------- -------------------- --------- -- ---------- --------------- --------- --------- ---------- ---------- ---------- ---------- ---------- ----------
+       102 SHREE                           2478 Tuti                 imaya@gmail.com      12-JUL-90 fm        502 2000
+                  05-MAR-23           2          702                          502        500        102
+       101 nila                            4444 Tvl                  nila@gmail.com       17-JUN-99 m         501 5000
+                  04-MAR-23           4          701                          501        800        101
+       103 nila                           15554 Vnr                  rafi@gmail.com       19-MAR-96 fm        503 8000
+                  06-MAR-23           5          703                          501        700        103
+       104 riya                           17978 madurai              riya@gmail.com       29-JUL-04 fm        504 10000           07-MAR-23           6          704                          502        601        104
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+2.DISPLAY ALL THE FIELDS FROM TICKET AND PAYMENT FOR THE TICKTES WHICH HAS BEEN PAYED:
+======================================================================================
+COMMAND:SELECT * FROM TICKET, PAYMENT WHERE PAYMENT.BILL_ID=TICKET.BILL_ID;
+
+ TICKET_ID AMOUNT          DATE_BOOK DATE_CANC NUM_SEATS  BOOK_ID    CANCEL_ID   FLIGHT_ID    BILL_ID     PSG_ID    BILL_ID PAY_DATE  AMOUNT                 TRANS_ID  TICKET_ID
+---------- --------------- --------- --------- ---------- ---------- ---------- ---------- ---------- ---------- ---------- --------- -------------------- ---------- ----------
+       504 10000           07-MAR-23           6          704                          502        601        104
+        601 29-JUL-23 12000                       707        401
+       503 8000            06-MAR-23           5          703                          501        700        103
+        700 21-JUN-23 14000                       700        102
+       501 5000            04-MAR-23           4          701                          501        800        101
+        800 24-MAR-23 26000                       600        103
+       502 2000            05-MAR-23           2          702                          502        500        102
+        500 25-MAR-23 30000                       200        104
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+                                                ****************************
+                                                                NATURAL JOIN
+                                                *****************************
+1.PERFORM NATURAL JOIN ON PASSENGERS AND TICKET:
+===============================================
+COMMAND:SELECT *FROM PASSENGER NATURAL JOIN TICKET;
+
+    PSG_ID NAME                         PSG_PWD ADDRESS              PSG_EMAIL            PSG_DOB   GE  TICKET_ID AMOUNT          DATE_BOOK DATE_CANC NUM_SEATS  BOOK_ID    CANCEL_ID   FLIGHT_ID    BILL_ID
+---------- ------------------------- ---------- -------------------- -------------------- --------- -- ---------- --------------- --------- --------- ---------- ---------- ---------- ---------- ----------
+       102 SHREE                           2478 Tuti                 imaya@gmail.com      12-JUL-90 fm        502 2000
+                  05-MAR-23           2          702                          502        500
+       101 nila                            4444 Tvl                  nila@gmail.com       17-JUN-99 m         501 5000
+                  04-MAR-23           4          701                          501        800
+       103 nila                           15554 Vnr                  rafi@gmail.com       19-MAR-96 fm        503 8000
+                  06-MAR-23           5          703                          501        700
+       104 riya                           17978 madurai              riya@gmail.com       29-JUL-04 fm        504 10000           07-MAR-23           6          704                          502        601
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+2.PERFORM NATURAL JOIN ON TICKET AND FLIGHT:
+=============================================
+COMMAND:SELECT * FROM TICKET NATURAL JOIN FLIGHT;
+
+ FLIGHT_ID  TICKET_ID AMOUNT          DATE_BOOK DATE_CANC NUM_SEATS  BOOK_ID    CANCEL_ID     BILL_ID     PSG_ID FLIGHT_NAM MODEL                     AVAILABILITY
+---------- ---------- --------------- --------- --------- ---------- ---------- ---------- ---------- ---------- ---------- ------------------------- ------------
+       501        501 5000            04-MAR-23           4          701                          800        101 rrr
+            b_class                             70
+       502        502 2000            05-MAR-23           2          702                          500        102 sss
+            b_class                             60
+       501        503 8000            06-MAR-23           5          703                          700        103 rrr
+            b_class                             70
+       502        504 10000           07-MAR-23           6          704                          601        104 sss
+            b_class                             60
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+                                                ****************************
+                                                        LEFT OUTER JOIN
+                                                ****************************
+1.PERFORM LEFT OUTER JOIN ON PASSENGER AND TICKET(USING PSG ID):
+==================================================
+COMMAND:SELECT * FROM PASSENGER P LEFT OUTER JOIN TICKET  T ON T.PSG_ID=P.PSG_ID ;
+
+    PSG_ID NAME                         PSG_PWD ADDRESS              PSG_EMAIL            PSG_DOB   GE  TICKET_ID AMOUNT          DATE_BOOK DATE_CANC NUM_SEATS  BOOK_ID    CANCEL_ID   FLIGHT_ID    BILL_ID     PSG_ID
+---------- ------------------------- ---------- -------------------- -------------------- --------- -- ---------- --------------- --------- --------- ---------- ---------- ---------- ---------- ---------- ----------
+       101 nila                            4444 Tvl                  nila@gmail.com       17-JUN-99 m         501 5000
+                  04-MAR-23           4          701                          501        800        101
+       102 SHREE                           2478 Tuti                 imaya@gmail.com      12-JUL-90 fm        502 2000
+                  05-MAR-23           2          702                          502        500        102
+       103 nila                           15554 Vnr                  rafi@gmail.com       19-MAR-96 fm        503 8000
+                  06-MAR-23           5          703                          501        700        103
+       104 riya                           17978 madurai              riya@gmail.com       29-JUL-04 fm        504 10000           07-MAR-23           6          704                          502        601        104
+       108 REENA                           8989 Tvl                  reena@gmail.com      19-JUL-20 fm
+       109 maggi                           8900 vnr                  maggi@gmail.com      07-APR-20 m
+
+6 rows selected.
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+2.PERFORM LEFT OUTER JOIN ON TICKET AND FLIGHT(USING FLIGHT ID):
+===============================================
+COMMAND: SELECT * FROM FLIGHT F LEFT OUTER JOIN TICKET  T ON T.FLIGHT_ID=F.FLIGHT_ID ;
+
+ FLIGHT_ID FLIGHT_NAM MODEL                     AVAILABILITY  TICKET_ID AMOUNT          DATE_BOOK DATE_CANC NUM_SEATS  BOOK_ID    CANCEL_ID   FLIGHT_ID    BILL_ID     PSG_ID
+---------- ---------- ------------------------- ------------ ---------- --------------- --------- --------- ---------- ---------- ---------- ---------- ---------- ----------
+       501 rrr        b_class                             70        501 5000            04-MAR-23           4          701                          501        800        101
+       502 sss        b_class                             60        502 2000            05-MAR-23           2          702                          502        500        102
+       501 rrr        b_class                             70        503 8000            06-MAR-23           5          703                          501        700        103
+       502 sss        b_class                             60        504 10000           07-MAR-23           6          704
+
+DISPLAY THE PASSENGERS WHO BOOKED THE TICKET ALONG WITH THE PAYMENT:
+====================================================================
+COMMAND:select * from passenger A left outer join ticket AB on A.psg_id=AB.psg_id left outer join payment B on AB.bill_id=B.bill_id;
+
+    PSG_ID NAME                         PSG_PWD ADDRESS              PSG_EMAIL            PSG_DOB   GE  TICKET_ID AMOUNT          DATE_BOOK DATE_CANC NUM_SEATS  BOOK_ID    CANCEL_ID   FLIGHT_ID    BILL_ID     PSG_ID    BILL_ID PAY_DATE  AMOUNT                 TRANS_ID  TICKET_ID
+---------- ------------------------- ---------- -------------------- -------------------- --------- -- ---------- --------------- --------- --------- ---------- ---------- ---------- ---------- ---------- ---------- ---------- --------- -------------------- ---------- ----------
+       104 riya                           17978 madurai              riya@gmail.com       29-JUL-04 fm        504 10000           07-MAR-23           6          704
+                              502        601        104        601 29-JUL-23 12000                       707        401
+       103 nila                           15554 Vnr                  rafi@gmail.com       19-MAR-96 fm        503 8000            06-MAR-23           5          703
+                              501        700        103        700 21-JUN-23 14000                       700        102
+       101 nila                            4444 Tvl                  nila@gmail.com       17-JUN-99 m         501 5000            04-MAR-23           4          701
+                              501        800        101        800 24-MAR-23 26000                       600        103
+       102 SHREE                           2478 Tuti                 imaya@gmail.com      12-JUL-90 fm        502 2000            05-MAR-23           2          702
+                              502        500        102        500 25-MAR-23 30000                       200        104
+       108 REENA                           8989 Tvl                  reena@gmail.com      19-JUL-20 fm
+       109 maggi                           8900 vnr                  maggi@gmail.com      07-APR-20 m
+       105 ARJUN                           7890 VNR                  arjun@gmail.com      26-OCT-07 m
+
+7 rows selected.
+
+DISPLAY THE PASSENGERS WHO BOOKED TICKTES AND PAYMENT WHOSE ID > 103:
+====================================================================
+
+COMMAND:select * from passenger A left outer join ticket AB on A.psg_id=AB.psg_id left outer join payment B on AB.bill_id=B.bill_id where A.psg_id>103;
+
+    PSG_ID NAME                         PSG_PWD ADDRESS              PSG_EMAIL            PSG_DOB   GE  TICKET_ID AMOUNT          DATE_BOOK DATE_CANC NUM_SEATS  BOOK_ID    CANCEL_ID   FLIGHT_ID    BILL_ID     PSG_ID    BILL_ID PAY_DATE  AMOUNT                 TRANS_ID  TICKET_ID
+---------- ------------------------- ---------- -------------------- -------------------- --------- -- ---------- --------------- --------- --------- ---------- ---------- ---------- ---------- ---------- ---------- ---------- --------- -------------------- ---------- ----------
+       104 riya                           17978 madurai              riya@gmail.com       29-JUL-04 fm        504 10000           07-MAR-23           6          704
+                              502        601        104        601 29-JUL-23 12000                       707        401
+       108 REENA                           8989 Tvl                  reena@gmail.com      19-JUL-20 fm
+       109 maggi                           8900 vnr                  maggi@gmail.com      07-APR-20 m
+       105 ARJUN                           7890 VNR                  arjun@gmail.com      26-OCT-07 m
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+                                                ****************************
+                                                        RIGHT OUTER JOIN
+                                                ****************************
+1.PERFORM RIGHT OUTER JOIN ON PASSENGER AND TICKET(USING PSG ID):
+================================================================
+COMMAND: SELECT * FROM TICKET T RIGHT OUTER JOIN PASSENGER P ON T.PSG_ID=P.PSG_ID ;
+
+ TICKET_ID AMOUNT          DATE_BOOK DATE_CANC NUM_SEATS  BOOK_ID    CANCEL_ID   FLIGHT_ID    BILL_ID     PSG_ID     PSG_ID NAME                         PSG_PWD ADDRESS              PSG_EMAIL            PSG_DOB   GE
+---------- --------------- --------- --------- ---------- ---------- ---------- ---------- ---------- ---------- ---------- ------------------------- ---------- -------------------- -------------------- --------- --
+       501 5000            04-MAR-23           4          701                          501        800        101
+        101 nila                            4444 Tvl                  nila@gmail.com       17-JUN-99 m
+       502 2000            05-MAR-23           2          702                          502        500        102
+        102 SHREE                           2478 Tuti                 imaya@gmail.com      12-JUL-90 fm
+       503 8000            06-MAR-23           5          703                          501        700        103
+        103 nila                           15554 Vnr                  rafi@gmail.com       19-MAR-96 fm
+       504 10000           07-MAR-23           6          704                          502        601        104
+        104 riya                           17978 madurai              riya@gmail.com       29-JUL-04 fm
+
+        108 REENA                           8989 Tvl                  reena@gmail.com      19-JUL-20 fm
+
+        109 maggi                           8900 vnr                  maggi@gmail.com      07-APR-20 m
+
+6 rows selected.
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+PERFORM LEFT RIGHT JOIN ON PASSENGERS AND TICKET:
+=================================================
+COMMAND:SELECT * FROM PASSENGER P RIGHT OUTER JOIN TICKET T ON T.PSG_ID=P.PSG_ID ;
+
+    PSG_ID NAME                         PSG_PWD ADDRESS              PSG_EMAIL            PSG_DOB   GE  TICKET_ID AMOUNT          DATE_BOOK DATE_CANC NUM_SEATS  BOOK_ID    CANCEL_ID   FLIGHT_ID    BILL_ID     PSG_ID
+---------- ------------------------- ---------- -------------------- -------------------- --------- -- ---------- --------------- --------- --------- ---------- ---------- ---------- ---------- ---------- ----------
+       102 SHREE                           2478 Tuti                 imaya@gmail.com      12-JUL-90 fm        502 2000
+                  05-MAR-23           2          702                          502        500        102
+       101 nila                            4444 Tvl                  nila@gmail.com       17-JUN-99 m         501 5000
+                  04-MAR-23           4          701                          501        800        101
+       103 nila                           15554 Vnr                  rafi@gmail.com       19-MAR-96 fm        503 8000
+                  06-MAR-23           5          703                          501        700        103
+       104 riya                           17978 madurai              riya@gmail.com       29-JUL-04 fm        504 10000           07-MAR-23           6          704                          502        601        104
+
+
+DISPLAY ID,NAME,PWD,ADDRESS,BILL ID,TRANS ID OF THE PASSENGERS WHO BOOKED TICKET AND PAYED:
+===========================================================================================
+COMMAND:select A.psg_id,A.name,A.psg_pwd,A.address,B.bill_id,B.trans_id from passenger A right outer join ticket AB on A.psg_id=AB.psg_id right outer join payment B on AB.bill_id=B.bill_id;
+
+    PSG_ID NAME                         PSG_PWD ADDRESS                 BILL_ID   TRANS_ID
+---------- ------------------------- ---------- -------------------- ---------- ----------
+       102 SHREE                           2478 Tuti                        500        200
+       101 nila                            4444 Tvl                         800        600
+       103 nila                           15554 Vnr                         700        700
+       104 riya                           17978 madurai                     601        707
+
+
+DISPLAY THE PASSENGERS WHO BOOKED TICKET AND PAYED WHOSE BILL ID > 501:
+=======================================================================
+
+COMMAND: select * from passenger A right outer join ticket AB on A.psg_id=AB.psg_id right outer join payment B on AB.bill_id=B.bill_id where B.bill_id>501;
+
+    PSG_ID NAME                         PSG_PWD ADDRESS              PSG_EMAIL            PSG_DOB   GE  TICKET_ID AMOUNT          DATE_BOOK DATE_CANC NUM_SEATS  BOOK_ID    CANCEL_ID   FLIGHT_ID    BILL_ID     PSG_ID    BILL_ID PAY_DATE  AMOUNT                 TRANS_ID  TICKET_ID
+---------- ------------------------- ---------- -------------------- -------------------- --------- -- ---------- --------------- --------- --------- ---------- ---------- ---------- ---------- ---------- ---------- ---------- --------- -------------------- ---------- ----------
+       101 nila                            4444 Tvl                  nila@gmail.com       17-JUN-99 m         501 5000            04-MAR-23           4          701
+                              501        800        101        800 24-MAR-23 26000                       600        103
+       103 nila                           15554 Vnr                  rafi@gmail.com       19-MAR-96 fm        503 8000            06-MAR-23           5          703
+                              501        700        103        700 21-JUN-23 14000                       700        102
+       104 riya                           17978 madurai              riya@gmail.com       29-JUL-04 fm        504 10000           07-MAR-23           6          704
+                              502        601        104        601 29-JUL-23 12000                       707        401
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+                                                **************************
+                                                        FULL OUTER JOINS
+                                                **************************
+DISPLAY THE DETAILS OF THE PASSENGER AND TICKET AND PAYMENT:
+===========================================================
+COMMAND:select * from passenger P full outer join ticket AB on P.psg_id=AB.psg_id full outer join payment py on AB.bill_id=py.bill_id;
+
+    PSG_ID NAME                         PSG_PWD ADDRESS              PSG_EMAIL            PSG_DOB   GE  TICKET_ID AMOUNT          DATE_BOOK DATE_CANC NUM_SEATS  BOOK_ID    CANCEL_ID   FLIGHT_ID    BILL_ID     PSG_ID    BILL_ID PAY_DATE  AMOUNT                 TRANS_ID  TICKET_ID
+---------- ------------------------- ---------- -------------------- -------------------- --------- -- ---------- --------------- --------- --------- ---------- ---------- ---------- ---------- ---------- ---------- ---------- --------- -------------------- ---------- ----------
+       102 SHREE                           2478 Tuti                 imaya@gmail.com      12-JUL-90 fm        502 2000            05-MAR-23           2          702
+                              502        500        102        500 25-MAR-23 30000                       200        104
+       101 nila                            4444 Tvl                  nila@gmail.com       17-JUN-99 m         501 5000            04-MAR-23           4          701
+                              501        800        101        800 24-MAR-23 26000                       600        103
+       103 nila                           15554 Vnr                  rafi@gmail.com       19-MAR-96 fm        503 8000            06-MAR-23           5          703
+                              501        700        103        700 21-JUN-23 14000                       700        102
+       104 riya                           17978 madurai              riya@gmail.com       29-JUL-04 fm        504 10000           07-MAR-23           6          704
+                              502        601        104        601 29-JUL-23 12000                       707        401
+       108 REENA                           8989 Tvl                  reena@gmail.com      19-JUL-20 fm
+       109 maggi                           8900 vnr                  maggi@gmail.com      07-APR-20 m
+       105 ARJUN                           7890 VNR                  arjun@gmail.com      26-OCT-07 m
+
+7 rows selected.
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+PERFORM RIGHT FULL OUTER JOIN ON PASSENGER AND TICKET:
+=====================================================
+COMMAND:SELECT * FROM  PASSENGER P FULL OUTER JOIN TICKET T ON P.PSG_ID=T.PSG_ID ;
+
+    PSG_ID NAME                         PSG_PWD ADDRESS              PSG_EMAIL            PSG_DOB   GE  TICKET_ID AMOUNT          DATE_BOOK DATE_CANC NUM_SEATS  BOOK_ID    CANCEL_ID   FLIGHT_ID    BILL_ID     PSG_ID
+---------- ------------------------- ---------- -------------------- -------------------- --------- -- ---------- --------------- --------- --------- ---------- ---------- ---------- ---------- ---------- ----------
+       102 SHREE                           2478 Tuti                 imaya@gmail.com      12-JUL-90 fm        502 2000
+                  05-MAR-23           2          702                          502        500        102
+       101 nila                            4444 Tvl                  nila@gmail.com       17-JUN-99 m         501 5000
+                  04-MAR-23           4          701                          501        800        101
+       103 nila                           15554 Vnr                  rafi@gmail.com       19-MAR-96 fm        503 8000
+                  06-MAR-23           5          703                          501        700        103
+       104 riya                           17978 madurai              riya@gmail.com       29-JUL-04 fm        504 10000           07-MAR-23           6          704                          502        601        104
+       108 REENA                           8989 Tvl                  reena@gmail.com      19-JUL-20 fm
+       109 maggi                           8900 vnr                  maggi@gmail.com      07-APR-20 m
+
+6 rows selected.
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+                                                **************************
+                                                        INNER JOINS
+                                                **************************
+PERFORM INNER JOIN ON PASSENGER TABLE:
+======================================
+COMMAND:SELECT P.PSG_ID,NAME,ADDRESS FROM PASSENGER P INNER JOIN TICKET T ON  P.PSG_ID=T.PSG_ID WHERE T.PSG_ID=102;
+
+    PSG_ID NAME                      ADDRESS
+---------- ------------------------- --------------------
+       102 SHREE                     Tuti
+-------------------------------------------------------------------------------------------------------------------------------
+PERFORM  INNER JOIN  ON TICKET TABLE:
+=====================================
+COMMAND:SELECT T.BILL_ID,T.NUM_SEATS FROM TICKET T INNER JOIN PAYMENT P ON P.BILL_ID=T.BILL_ID WHERE P.BILL_ID=700;
+
+   BILL_ID NUM_SEATS
+---------- ----------
+       700 5
+
+DISPLAY THE PASSENGERS WHO BOOKED TICKET AND PAYMENT:
+=====================================================
+
+COMMAND:select * from passenger A inner join ticket AB on A.psg_id=AB.psg_id inner join payment B on AB.bill_id=B.bill_id;
+
+    PSG_ID NAME                         PSG_PWD ADDRESS              PSG_EMAIL            PSG_DOB   GE  TICKET_ID AMOUNT          DATE_BOOK DATE_CANC NUM_SEATS  BOOK_ID    CANCEL_ID   FLIGHT_ID    BILL_ID     PSG_ID    BILL_ID PAY_DATE  AMOUNT                 TRANS_ID  TICKET_ID
+---------- ------------------------- ---------- -------------------- -------------------- --------- -- ---------- --------------- --------- --------- ---------- ---------- ---------- ---------- ---------- ---------- ---------- --------- -------------------- ---------- ----------
+       102 SHREE                           2478 Tuti                 imaya@gmail.com      12-JUL-90 fm        502 2000            05-MAR-23           2          702
+                              502        500        102        500 25-MAR-23 30000                       200        104
+       101 nila                            4444 Tvl                  nila@gmail.com       17-JUN-99 m         501 5000            04-MAR-23           4          701
+                              501        800        101        800 24-MAR-23 26000                       600        103
+       103 nila                           15554 Vnr                  rafi@gmail.com       19-MAR-96 fm        503 8000            06-MAR-23           5          703
+                              501        700        103        700 21-JUN-23 14000                       700        102
+       104 riya                           17978 madurai              riya@gmail.com       29-JUL-04 fm        504 10000           07-MAR-23           6          704
+                              502        601        104        601 29-JUL-23 12000                       707        401
+
+
+DISPLAY  THE DETAILS OF THE PASSENGER WHO PAYED THE BILL AND AMOUNT > 14000:
+=============================================================================
+
+COMMAND: select * from passenger A inner join ticket AB on A.psg_id=AB.psg_id inner join payment B on AB.bill_id=B.bill_id where B.amount>14000;
+
+    PSG_ID NAME                         PSG_PWD ADDRESS              PSG_EMAIL            PSG_DOB   GE  TICKET_ID AMOUNT          DATE_BOOK DATE_CANC NUM_SEATS  BOOK_ID    CANCEL_ID   FLIGHT_ID    BILL_ID     PSG_ID    BILL_ID PAY_DATE  AMOUNT                 TRANS_ID  TICKET_ID
+---------- ------------------------- ---------- -------------------- -------------------- --------- -- ---------- --------------- --------- --------- ---------- ---------- ---------- ---------- ---------- ---------- ---------- --------- -------------------- ---------- ----------
+       101 nila                            4444 Tvl                  nila@gmail.com       17-JUN-99 m         501 5000            04-MAR-23           4          701
+                              501        800        101        800 24-MAR-23 26000                       600        103
+       102 SHREE                           2478 Tuti                 imaya@gmail.com      12-JUL-90 fm        502 2000            05-MAR-23           2          702
+                              502        500        102        500 25-MAR-23 30000                       200        104
+
+
+
+----------------------------------------------------------------------------------------------------------------------------------
+                                                **************************
+                                                        SELF JOINS
+                                                **************************
+PERFORM SELF JOIN ON PASSEGER TABLE:
+====================================
+COMMAND: SELECT PA.PSG_ID,PA.NAME FROM PASSENGER PA INNER JOIN PASSENGER P ON P.PSG_ID=101;
+
+    PSG_ID NAME
+---------- -------------------------
+       102 SHREE
+       101 nila
+       103 nila
+       104 riya
+       108 REENA
+       109 maggi
+
+6 rows selected.
+----------------------------------------------------------------------------------------------------------------------------
+PERFORM SELF JOIN ON PAYMENT TABLE:
+===================================
+COMMAND:SELECT P.BILL_ID,P.PAY_DATE,P.AMOUNT FROM PAYMENT P INNER JOIN PAYMENT PA ON PA.BILL_ID=500;
+
+   BILL_ID PAY_DATE  AMOUNT
+---------- --------- --------------------
+       601 29-JUL-23 12000
+       700 21-JUN-23 14000
+       800 24-MAR-23 26000
+       500 25-MAR-23 30000
+------------------------------------------------------------------------------------------------------------------------------
