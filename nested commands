@@ -1,0 +1,381 @@
+
+DISPLAY THE TABLES:(PASSENGER,TICKET,PAYMENT)
+=============================================
+                                                                PAYMENT
+                                                                =======
+  PSG_ID NAME                         PSG_PWD ADDRESS              PSG_EMAIL            PSG_DOB   GE
+---------- ------------------------- ---------- -------------------- -------------------- --------- --
+       102 SHREE                           2478 Tuti                 imaya@gmail.com      12-JUL-90 fm
+       101 nila                            4444 Tvl                  nila@gmail.com       17-JUN-99 m
+       103 rafi                           15554 Vnr                  rafi@gmail.com       19-MAR-96 fm
+       104 riya                           17978 madurai              riya@gmail.com       29-JUL-04 fm
+
+-------------------------------------------------------------------------------------------------------------------------
+                                                                TICKET
+                                                                =======
+TICKET_ID AMOUNT          DATE_BOOK DATE_CANC NUM_SEATS  BOOK_ID    CANCEL_ID   FLIGHT_ID    BILL_ID     PSG_ID
+---------- --------------- --------- --------- ---------- ---------- ---------- ---------- ---------- ----------
+       501 5000            04-MAR-23           4          701                          501        800        101
+       502 2000            05-MAR-23           2          702                          502        500        102
+       503 8000            06-MAR-23           5          703                          501        700        103
+       504 10000           07-MAR-23           6          704                          502        601        104
+
+------------------------------------------------------------------------------------------------------------------------
+                                                                PAYMENT
+                                                                =======
+
+BILL_ID PAY_DATE  AMOUNT                 TRANS_ID  TICKET_ID
+---------- --------- -------------------- ---------- ----------
+       601 29-JUL-23 12000                       707        401
+       700 21-JUN-23 14000                       700        102
+       800 24-MAR-23 26000                       600        103
+       500 25-MAR-23 30000                       200        104
+
+
+-------------------------------------------------------------------------------------------------------------------------
+1.DISPLAY THE NAME , ID , ADDRESS OF THE PASSENGER WHERE THE ADDRESS IS"%RAI":
+===========================================================================
+COMMAND:SELECT PSG_ID,NAME,ADDRESS FROM PASSENGER WHERE ADDRESS IN (SELECT ADDRESS FROM PASSENGER WHERE ADDRESS LIKE '%rai');
+
+    PSG_ID NAME                      ADDRESS
+---------- ------------------------- --------------------
+       104 riya                      madurai
+--------------------------------------------------------------------------------------------------------------------------
+
+2.DISPLAY THE DISTINCT PASSENGER IN TICKET TABLE :
+==============================================
+
+COMMAND: SELECT DISTINCT T.PSG_ID FROM TICKET T WHERE PSG_ID IN(SELECT PSG_ID FROM PASSENGER );
+
+    PSG_ID
+----------
+       101
+       102
+       103
+       104
+----------------------------------------------------------------------------------------------------------------------------
+3.DISPLAY THE TICKET DETAILS WHERE THE BILL ID MUST BE GREATER THAN 101:
+=====================================================================
+COMMAND:SELECT * FROM TICKET WHERE BILL_ID > ALL(SELECT BILL_ID FROM TICKET WHERE PSG_ID<101);
+
+ TICKET_ID AMOUNT          DATE_BOOK DATE_CANC NUM_SEATS  BOOK_ID    CANCEL_ID   FLIGHT_ID    BILL_ID     PSG_ID
+---------- --------------- --------- --------- ---------- ---------- ---------- ---------- ---------- ----------
+       502 2000            05-MAR-23           2          702                          502        500        102
+       504 10000           07-MAR-23           6          704                          502        601        104
+       503 8000            06-MAR-23           5          703                          501        700        103
+       501 5000            04-MAR-23           4          701                          501        800        101
+--------------------------------------------------------------------------------------------------------------------------------
+4.DISPLAY THE DETAILS OF THE PASSENGER WHO BOOKED TICKETS:
+========================================================
+COMMAND:SELECT * FROM PASSENGER P WHERE EXISTS(SELECT *FROM TICKET T WHERE P.PSG_ID=T.PSG_ID);
+
+    PSG_ID NAME                         PSG_PWD ADDRESS              PSG_EMAIL            PSG_DOB   GE
+---------- ------------------------- ---------- -------------------- -------------------- --------- --
+       101 nila                            4444 Tvl                  nila@gmail.com       17-JUN-99 m
+       102 SHREE                           2478 Tuti                 imaya@gmail.com      12-JUL-90 fm
+       103 nila                           15554 Vnr                  rafi@gmail.com       19-MAR-96 fm
+       104 riya                           17978 madurai              riya@gmail.com       29-JUL-04 fm
+
+--------------------------------------------------------------------------------------------------------------------------------
+5.DISPLAY THE PASSENGERS WHO HAS NOT BOOKED ANY TICKETS:
+=======================================================
+COMMAND:SELECT * FROM PASSENGER P WHERE NOT EXISTS(SELECT *FROM TICKET T WHERE P.PSG_ID=T.PSG_ID);
+
+    PSG_ID NAME                         PSG_PWD ADDRESS              PSG_EMAIL            PSG_DOB   GE
+---------- ------------------------- ---------- -------------------- -------------------- --------- --
+       108 REENA                           8989 Tvl                  reena@gmail.com      19-JUL-20 fm
+       109 maggi                           8900 vnr                  maggi@gmail.com      07-APR-20 m
+       105 ARJUN                           7890 VNR                  arjun@gmail.com      26-OCT-07 m
+
+------------------------------------------------------------------------------------------------------------------------------------
+6.DISPLAY THE PASSENGERS AND THEIR COUNT OF TICKETS:
+=================================================
+COMMAND:SELECT PSG_ID,NAME,(SELECT COUNT(*) FROM TICKET WHERE PASSENGER.PSG_ID=TICKET.PSG_ID) AS COUNT FROM PASSENGER;
+
+    PSG_ID NAME                           COUNT
+---------- ------------------------- ----------
+       102 SHREE                              1
+       101 nila                               1
+       103 nila                               1
+       104 riya                               1
+       108 REENA                              0
+       109 maggi                              0
+       105 ARJUN                              0
+
+7 rows selected.
+---------------------------------------------------------------------------------------------------------------------------------------------
+7.CREATE A TABLE PARTIAL WITH PASSENGER FIELDS:
+============================================
+COMMAND: CREATE TABLE PARTIAL AS (SELECT NAME,PSG_ID FROM PASSENGER);
+
+Table created.
+
+SQL> SELECT * FROM PARTIAL;
+
+NAME                          PSG_ID
+------------------------- ----------
+SHREE                            102
+nila                             101
+nila                             103
+riya                             104
+REENA                            108
+maggi                            109
+ARJUN                            105
+
+7 rows selected.
+-----------------------------------------------------------------------------------------------------------------------------------------------
+INSERT THE VALUES INTO THE TABLE PARTIAL FROM THE PASSENGER TABLE WHERE THE PASSENGERS NAME HAS 'I':
+===================================================================================================
+
+COMMAND:INSERT INTO PARTIAL(SELECT NAME,PSG_ID FROM PASSENGER WHERE NAME=ANY(SELECT NAME FROM PASSENGER WHERE NAME LIKE '%i%'));
+
+4 rows created.
+
+SQL> SELECT * FROM PARTIAL;
+
+NAME                          PSG_ID
+------------------------- ----------
+SHREE                            102
+nila                             101
+nila                             103
+riya                             104
+REENA                            108
+maggi                            109
+ARJUN                            105
+nila                             101
+REENA                            108
+nila                             101
+nila                             103
+
+NAME                          PSG_ID
+------------------------- ----------
+riya                             104
+maggi                            109
+
+13 rows selected.
+----------------------------------------------------------------------------------------------------------------------------------------------
+
+8.INSERT THE VALUES INTO THE TABLE PARTIAL:
+=========================================
+COMMAND: INSERT INTO PARTIAL(SELECT NAME,PSG_ID FROM PASSENGER WHERE ADDRESS=ANY(SELECT ADDRESS FROM PASSENGER WHERE ADDRESS LIKE '%vl'));
+
+2 rows created.
+
+SQL> select * from partial;
+
+NAME                          PSG_ID
+------------------------- ----------
+SHREE                            102
+nila                             101
+nila                             103
+riya                             104
+REENA                            108
+maggi                            109
+ARJUN                            105
+nila                             101
+REENA                            108
+
+9 rows selected.
+-----------------------------------------------------------------------------------------------------------------------------------------------
+9.DISPLAY THE ID , NAME OF THE PASSENGER WHO HAS THE MAXIMUM ID IN TICKET TABLE:
+==============================================================================
+COMMAND:SELECT PSG_ID,NAME FROM PASSENGER P WHERE PSG_ID =(SELECT MAX(PSG_ID) FROM TICKET );
+
+    PSG_ID NAME
+---------- -------------------------
+       104 riya
+
+----------------------------------------------------------------------------------------------------------------------------------------------------
+10.DISPLAY THE ADDRESS FROM THE PASSENGER TABLE WHERE THERE ARE COUNT OF PASSENGERS IS HIGH IN THAT ADDRESS:
+=========================================================================================================
+COMMAND:SELECT ADDRESS FROM PASSENGER GROUP BY ADDRESS HAVING COUNT(PSG_ID)=(SELECT MAX(COUNT(PSG_ID)) FROM PASSENGER GROUP BY ADDRESS );
+
+ADDRESS
+--------------------
+Tvl
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------
+11.DISPLAY THE MAXIMUM ID FROM THE TICKET TABLE AS THE TICKET ID FOR ALL THE RECORDS IN PASSENGER TABLE:
+====================================================================================================
+COMMAND: SELECT PSG_ID,NAME,ADDRESS,PSG_PWD,(SELECT MAX(BILL_ID) FROM TICKET) AS TICKET FROM PASSENGER;
+
+    PSG_ID NAME                      ADDRESS                 PSG_PWD     TICKET
+---------- ------------------------- -------------------- ---------- ----------
+       102 SHREE                     Tuti                       2478        800
+       101 nila                      Tvl                        4444        800
+       103 nila                      Vnr                       15554        800
+       104 riya                      madurai                   17978        800
+       108 REENA                     Tvl                        8989        800
+       109 maggi                     vnr                        8900        800
+       105 ARJUN                     VNR                        7890        800
+
+7 rows selected.
+--------------------------------------------------------------------------------------------------------------------------------------------------------------
+12.DISPLAY THE TYPE AS  NEW COLUMN:
+================================
+COMMAND: SELECT PSG_ID,NAME,'PASSENGER' AS TYPE FROM PASSENGER;
+
+    PSG_ID NAME                      TYPE
+---------- ------------------------- ---------
+       102 SHREE                     PASSENGER
+       101 nila                      PASSENGER
+       103 nila                      PASSENGER
+       104 riya                      PASSENGER
+       108 REENA                     PASSENGER
+       109 maggi                     PASSENGER
+       105 ARJUN                     PASSENGER
+
+7 rows selected.
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+13.SELECT BILL_ID AND AMOUNT FROM PAYMENT:
+=======================================
+COMMAND:SELECT *FROM(SELECT BILL_ID,AMOUNT FROM PAYMENT)  PA;
+
+   BILL_ID AMOUNT
+---------- --------------------
+       601 12000
+       700 14000
+       800 26000
+       500 30000
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+14.DISPLAY THE COUNT OF PASSENGERS IN EACH ADDRESS:
+================================================
+COMMAND:SELECT ADDRESS,COUNT(PSG_ID) FROM PASSENGER GROUP BY ADDRESS;
+
+ADDRESS              COUNT(PSG_ID)
+-------------------- -------------
+Tuti                             1
+Tvl                              2
+Vnr                              1
+madurai                          1
+vnr                              1
+VNR                              1
+
+6 rows selected.
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+15.COUNT THE NUMBER OF TICKETS BOOKED BY PASSENGERS:
+=================================================
+COMMAND:SELECT PSG_ID,COUNT(PSG_ID) FROM TICKET GROUP BY PSG_ID HAVING AVG(PSG_ID)<103;
+
+    PSG_ID COUNT(PSG_ID)
+---------- -------------
+       101             1
+       102             1
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+16.DISPLAY THE ID ,NAME,GENDER,ADDRESS FROM PASSENGER TABLE WHERE THE ADDRESS NOT LIKE '%vl':
+==========================================================================================
+COMMAND:SELECT PSG_ID,NAME,GENDER,ADDRESS FROM PASSENGER WHERE ADDRESS NOT  IN (SELECT ADDRESS FROM PASSENGER WHERE ADDRESS LIKE '%vl');
+
+    PSG_ID NAME                      GE ADDRESS
+---------- ------------------------- -- --------------------
+       103 nila                      fm Vnr
+       102 SHREE                     fm Tuti
+       104 riya                      fm madurai
+       105 ARJUN                     m  VNR
+       109 maggi                     m  vnr
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+17.DISPLAY THE NUMBER OF SEATS FOR THE TICKETS WHICH HAS DONE THE PAYMENT WHOSE AMOUNT IS GREATER THAN 14000:
+=============================================================================================================
+COMMAND:select num_seats from ticket where bill_id in(select bill_id from payment where amount>=14000);
+
+NUM_SEATS
+----------
+4
+2
+5
+----------------------------------------------------------------------------------------------------------------------------------
+18.DISPLAY THE PASSENGERS WHOSE ADDRESS HAS 'RAI' IN IT:
+========================================================
+COMMAND:select psg_id,name from passenger where address in(select address from passenger where address like '%rai%');
+
+    PSG_ID NAME
+---------- -------------------------
+       104 riya
+-------------------------------------------------------------------------------------------------------------------------------------
+19.DISPLAY THE MINIMUM AMOUNT OF PAYMENT:
+=========================================
+COMMAND: select amount from payment where amount=(select min(amount) from payment);
+
+AMOUNT
+--------------------
+12000
+-------------------------------------------------------------------------------------------------------------------------------------
+20.DISPLAY THE BILL_ID WHO HAVE MAX AMOUNT:
+===========================================
+COMMAND:select bill_id from payment group by bill_id having count(bill_id)=(select max(count(bill_id)) from payment group by bill_id);
+
+   BILL_ID
+----------
+       500
+       601
+       700
+       800
+---------------------------------------------------------------------------------------------------------------------------------------
+21.DISPLAY THE PASSENGER PHN NUM WHOSE ID IS 101:
+=================================================
+COMMAND: select * from (select psg_num from passenger_phnno where psg_id=101);
+
+   PSG_NUM
+----------
+    909090
+----------------------------------------------------------------------------------------------------------------------------------------
+22.DISPLAY BILL ID AND TICKET ID WHOSE BILL IS NOT 600 AND 800:
+===============================================================
+COMMAND:select ticket_id,bill_id from ticket where bill_id not in (select bill_id from payment where bill_id =800 or bill_id=600);
+
+ TICKET_ID    BILL_ID
+---------- ----------
+       503        700
+       504        601
+       502        500
+--------------------------------------------------------------------------------------------------------------------------------------
+23.DISPLAY THE ID AND ADDRESS OF PASSENGER WHOSE PASSWORD IS EQUAL TO THE AVG OF THE PASSENGER TABLE:
+====================================================================================================
+COMMAND: select psg_id,address from passenger p1 where psg_pwd =(select avg(psg_pwd) from passenger p2 );
+
+no rows selected
+---------------------------------------------------------------------------------------------------------------------------------------
+DISPLAY THE DETAILS OF THE PASSENGER WHO HAVE BOOKED TICKETS WITHOUT DUPLICATES:
+===============================================================================
+COMMAND: SELECT * from passenger where psg_id IN(select DISTINCT O.PSG_ID FROM Ticket O WHERE PSG_ID IN(SELECT PSG_ID FROM PASSENGER ));
+
+    PSG_ID NAME                         PSG_PWD ADDRESS              PSG_EMAIL            PSG_DOB   GE
+---------- ------------------------- ---------- -------------------- -------------------- --------- --
+       101 nila                            4444 Tvl                  nila@gmail.com       17-JUN-99 m
+       102 SHREE                           2478 Tuti                 imaya@gmail.com      12-JUL-90 fm
+       103 nila                           15554 Vnr                  rafi@gmail.com       19-MAR-96 fm
+       104 riya                           17978 madurai              riya@gmail.com       29-JUL-04 fm
+----------------------------------------------------------------------------------------------------------------------------------------
+DISPLAY THE BILL ID WHOSE TRANSACTION ID IS GREATER THAN 400:
+============================================================
+COMMAND:SELECT *FROM PAYMENT WHERE BILL_id > ALL(SELECT BILL_id FROM PAYMENT WHERE TRANS_ID<400);
+
+   BILL_ID PAY_DATE  AMOUNT                 TRANS_ID  TICKET_ID
+---------- --------- -------------------- ---------- ----------
+       601 29-JUL-23 12000                       707        401
+       700 21-JUN-23 14000                       700        102
+       800 24-MAR-23 26000                       600        103
+-----------------------------------------------------------------------------------------------------------------------------------------
+DISPLAY THE PASSENGERS WHO BOOKED THE TICKET AND THE NUMBER OF TICKETS AS TRAVELLERS:
+====================================================================================
+COMMAND:SELECT PSG_ID,NAME,ADDRESS,(SELECT COUNT(*) FROM TICKET WHERE PASSENGER.PSG_ID=TICKET.PSG_ID) AS TRAVELLERS FROM PASSENGER;
+
+    PSG_ID NAME                      ADDRESS              TRAVELLERS
+---------- ------------------------- -------------------- ----------
+       102 SHREE                     Tuti                          1
+       101 nila                      Tvl                           1
+       103 nila                      Vnr                           1
+       104 riya                      madurai                       1
+       108 REENA                     Tvl                           0
+       109 maggi                     vnr                           0
+       105 ARJUN                     VNR                           0
+
+7 rows selected.
+--------------------------------------------------------------------------------------------------------------------------------------------
+DISPLAY THE ADDRESS WHERE THERE ARE MORE THAN ONE PASSENGER:
+============================================================
+COMMAND: SELECT  ADDRESS,COUNT(PSG_ID) FROM PASSENGER GROUP BY ADDRESS having count(psg_id)>1;
+
+ADDRESS              COUNT(PSG_ID)
+-------------------- -------------
+Tvl                              2
