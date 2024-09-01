@@ -1,0 +1,1777 @@
+CREATE ALL THE ENTITY SETS FOR AIRLINE RESERVATION SYSTEM:
+
+                                        1) FLIGHT:
+                                           ======
+CREATE TABLE FLIGHT(FLIGHT_ID INTEGER CONSTRAINT FLI_ID_PK PRIMARY KEY,FLIGHT_NAME VARCHAR(10),MODEL VARCHAR(25));
+
+Table created.
+
+ DESC FLIGHT;
+
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ FLIGHT_ID                                 NOT NULL NUMBER(38)
+ FLIGHT_NAME                                        VARCHAR2(10)
+ MODEL                                              VARCHAR2(25)
+
+ALTER THE TABLE FLIGHT ADD AVAILABILITY :
+=======================================
+
+ALTER TABLE FLIGHT ADD AVAILABILITY NUMBER(3);
+
+Table altered.
+
+SQL> DESC FLIGHT;
+
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ FLIGHT_ID                                 NOT NULL NUMBER(38)
+ FLIGHT_NAME                                        VARCHAR2(10)
+ MODEL                                              VARCHAR2(25)
+ AVAILABILITY                                       NUMBER(3)
+
+TRUNCATE DATA FROM TABLE FLIGHT:
+================================
+
+SQL> select * from flight;
+
+ FLIGHT_ID FLIGHT_NAM MODEL                     AVAILABILITY
+---------- ---------- ------------------------- ------------
+       401 KINGFISHER XX5                                 60
+       402 KINGFISHER XX7                                 70
+       403 KINGFISHER XX8                                 80
+       404 KINGFISHER XX9                                 90
+       405 KINGFISHER XX4                                 40
+
+SQL> truncate table flight;
+
+Table truncated.
+
+SQL> select * from flight;
+
+no rows selected
+=====================================================================================
+                                        2. SCHEDULE:
+
+1.CREATE A TABLE SCHEDULE WITH SCHEDULE ID AS PRIMARY KEY AND EMPLOYEE ID AS FORIEGN KEY:
+=======================================================================================
+COMMAND: create table Schedule (schedule_id integer, constraint sch_id_pk primary key(schedule_id),source varchar (20), destination varchar (20), s_date   varchar(10), d_date varchar(10),s_time varchar(10),d_time varchar(10),emp_id number(10));
+
+Table created.
+
+
+COMMAND: desc Schedule;
+Name                                      Null?          Type
+ ----------------------------------------- -------- ----------------------------
+ SCHEDULE_ID                    NOT NULL                        NUMBER(38)
+ SOURCE                                             VARCHAR2(20)
+ DESTINATION                                            VARCHAR2(20)
+ S_DATE                                             VARCHAR2(10)
+ D_DATE                                             VARCHAR2(10)
+ S_TIME                                             VARCHAR2(10)
+ D_TIME                                             VARCHAR2(10)
+ EMP_ID                                             NUMBER(10)
+
+
+ ALTER THE TABLE SCHEDULE BY ADDING FLIGHT_ID FOREIGN KEY:
+=========================================================
+
+SQL>ALTER TABLE SCHEDULE ADD CONSTRAINT FLI_ID_FK FOREIGN KEY(FLIGHT_ID) REFERENCES FLIGHT(FLIGHT_ID);
+
+Table altered.
+
+SQL> DESC SCHEDULE;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ SCHEDULE_ID                NOT NULL                            NUMBER(38)
+ SOURCE                                             VARCHAR2(20)
+ DESTINATION                                            VARCHAR2(20)
+ S_DATE                                             VARCHAR2(10)
+ D_DATE                                             VARCHAR2(10)
+ S_TIME                                             VARCHAR2(10)
+ D_TIME                                             VARCHAR2(10)
+ EMP_ID                                             NUMBER(10)
+ FLIGHT_ID                                          NUMBER
+
+
+=====================================================================================
+
+3. TICKET :
+===========
+CREATE TABLE  TICKET WITH TICKET ID AS PRIMARY KEY:
+===================================================
+
+SQL> create table Ticket (ticket _id varchar (7),amount  varchar (15),date _booking varchar(10),num_ seats varchar (10),pass_ id  varchar(10),book_ id  varchar(10),bill _id varchar(10));
+
+Table created.
+
+COMMAND:  desc Ticket;
+
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ TICKET_ID                              NOT NULL   NUMBER(38)
+ AMOUNT                                            VARCHAR2(15)
+ DATE_BOOKING                                      VARCHAR2(10)
+ DATE_CANCEL                                       VARCHAR2(10)
+ NUM_SEATS                                         VARCHAR2(10)
+ PASS_ID                                           VARCHAR2(10)
+ BOOK_ID                                           VARCHAR2(10)
+ CANCEL_ID                                         VARCHAR2(10)
+ BILL_ID                                           VARCHAR2(10)
+
+
+
+ ALTER TABLE FLIGHT TICKET BY ADDING FLIGHT ID AS FOREIGN KEY:
+=============================================================
+
+SQL> ALTER TABLE FLIGHT CONSTRAINT FLI_ID_FK FOREIGN KEY(FLIGHT_ID) REFERENCES FLIGHT(FLIGHT_ID);
+
+Table altered.
+
+COMMAND: desc Ticket;
+
+Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ TICKET_ID                                 NOT NULL NUMBER(38)
+ AMOUNT                                             VARCHAR2(15)
+ DATE_BOOKING                                       VARCHAR2(10)
+ DATE_CANCEL                                        VARCHAR2(10)
+ NUM_SEATS                                          VARCHAR2(10)
+ PASS_ID                                            VARCHAR2(10)
+ BOOK_ID                                            VARCHAR2(10)
+ CANCEL_ID                                          VARCHAR2(10)
+ BILL_ID                                            VARCHAR2
+ FLIGHT_ID                                                  NUMBER(5
+
+
+
+
+=====================================================================================
+                                   3.PASSENGER
+
+CREATE A TABLE PASSENGER WITH PASSENGER ID AS PRIMARY KEY AND REMAINING REQUIRED ATTRIBUTES TO STORE PASSENGER INFORMATION:
+
+SQL> CREATE TABLE PASSENGER(PSG_ID INTEGER CONSTRAINT PSG_ID_pk PRIMARY KEY,
+NAME VARCHAR(25) CONSTRAINT psg_name_nn NOT NULL,PSG_PWD INTEGER,STATE VARCHAR(25),CITY VARCHAR(20),FLAT_NO INTEGER,PSG_EMAIL VARCHAR(30),PSG_DOB INTEGER);
+
+Table created.
+
+COMMAND: desc Passenger;
+
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ PSG_ID                                    NOT NULL NUMBER(38)
+ NAME                                      NOT NULL VARCHAR2(25)
+ PSG_PWD                                                     NUMBER(38)
+ STATE                                                              VARCHAR2(25)
+ CITY                                                                VARCHAR2(20)
+ FLAT_NO                                                         NUMBER(38)
+ PSG_EMAIL                                                   VARCHAR2(30)
+ PSG_DOB                                                       NUMBER(38)
+
+ALTER THE TABLE PASSENGER BY ADDING CHECK CONSTRAINT FOR GENDER:
+===============================================================
+COMMAND: alter table Passenger add gender varchar(2) check(gender='fm' or gender='m');
+
+Table altered.
+
+COMMAND: desc Passenger;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ PSG_ID                                    NOT NULL NUMBER(38)
+ NAME                                               VARCHAR2(25)
+ PSG_PWD                                            NUMBER(38)
+ STATE                                              VARCHAR2(25)
+ CITY                                               VARCHAR2(20)
+ FLAT_NO                                            NUMBER(38)
+ PSG_EMAIL                                          VARCHAR2(30)
+ PSG_DOB                                            NUMBER(38)
+ GENDER                                             VARCHAR2(2)
+
+ALTER THE TABLE PASSENGER BY MODIFYING THE DATA TYPE OF PSG_PWD AS UNIQUE ATTRIBUTE:
+
+COMMAND: alter table passenger modify psg_pwd integer unique;
+
+Table altered.
+
+SQL> desc passenger;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ PSG_ID                                    NOT NULL NUMBER(38)
+ NAME                                               VARCHAR2(25)
+ PSG_PWD                                            NUMBER(38)
+ ADDRESS                                            VARCHAR2(20)
+ PSG_EMAIL                                          VARCHAR2(20)
+ PSG_DOB                                            DATE
+ GENDER                                             VARCHAR2(2)
+
+
+=====================================================================================
+                                        5.EMPLOYEE
+
+
+CREATE A TABLE EMPLOY WITH EMP ID AS PRIMARY KEY AND REMAINING ATTRIBUTES REQUIRED FOR EMPLOYEE INFORMATION:
+===========================================================================================================
+SQL> CREATE TABLE EMPLOY(EMP_ID INTEGER CONSTRAINT EMP_ID_pk PRIMARY KEY,NAME VARCHAR(25),EMP_PWD INTEGER,STATE VARCHAR(25),CITY VARCHAR(20),ROLE VARCHAR(25),EMP_EXPERIENCE INTEGER, EMP_SAL INTEGER,EMP_OUALI VARCHAR(25),EMP_EMAIL VARCHAR(30),EMP_MOBILE_NO INTEGER,EMP_ADDR VARCHAR(50),EMP_DOB INTEGER);
+
+Table created.
+
+COMMAND:  desc Employ
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ EMP_ID                                    NOT NULL NUMBER(38)
+ NAME                                               VARCHAR2(25)
+ EMP_PWD                                            NUMBER(38)
+ STATE                                              VARCHAR2(25)
+ CITY                                               VARCHAR2(20)
+ ROLE                                               VARCHAR2(25)
+ EMP_EXPERIENCE                                     NUMBER(38)
+ EMP_SAL                                            NUMBER(38)
+ EMP_OUALI                                          VARCHAR2(25)
+ EMP_EMAIL                                          VARCHAR2(30)
+ EMP_MOBILE_NO                                      NUMBER(38)
+ EMP_ADDR                                           VARCHAR2(50)
+ EMP_DOB                                            NUMBER(38)
+
+
+ALTER THE TABLE EMPLOY BY ADDING GENDER AS AN ATTRIBUTE:
+=======================================================
+
+SQL> alter table Employ add gender varchar(2);
+
+Table altered.
+
+SQL>  desc Employ;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ EMP_ID                                    NOT NULL NUMBER(38)
+ NAME                                               VARCHAR2(25)
+ EMP_PWD                                            NUMBER(38)
+ STATE                                              VARCHAR2(25)
+ CITY                                               VARCHAR2(20)
+ ROLE                                               VARCHAR2(25)
+ EMP_EXPERIENCE                                     NUMBER(38)
+ EMP_SAL                                            NUMBER(38)
+ EMP_OUALI                                          VARCHAR2(25)
+ EMP_EMAIL                                          VARCHAR2(30)
+ EMP_MOBILE_NO                                      NUMBER(38)
+ EMP_ADDR                                           VARCHAR2(50)
+ EMP_DOB                                            NUMBER(38)
+ GENDER                                             VARCHAR2(2)
+
+==================================================================================
+                                        6.TRAVELS
+                                        ==========
+CREATE TABLE TRAVELS WITH PASSENGER ID AND FLIGHT ID AS FOREIGN KEY:
+====================================================================
+
+SQL> CREATE TABLE TRAVELS(TRA_DATE DATE,PSG_ID INTEGER,FLIGHT_ID INTEGER);
+
+Table created.
+
+SQL> desc travels;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ TRA_DATE                                           DATE
+ PSG_ID                                             NUMBER(38)
+ FLIGHT_ID                                          NUMBER(38)
+
+ALTER THE TABLE BY ADDING NAME AS AN ATTRIBUTE:
+===============================================
+
+SQL> alter table travels add name varchar(10);
+
+Table altered.
+
+SQL> desc travels;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ TRA_DATE                                           DATE
+ PSG_ID                                             NUMBER(38)
+ FLIGHT_ID                                          NUMBER(38)
+ NAME                                               VARCHAR2(10)
+
+ALTER THE TABLE TRAVELS BY DROPING THE ATTRIBUTE NAME:
+======================================================
+
+SQL> alter table travels drop(name);
+
+Table altered.
+
+SQL> desc travels;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ TRA_DATE                                           DATE
+ PSG_ID                                             NUMBER(38)
+ FLIGHT_ID                                        NUMBER(38)
+
+=====================================================================================
+                                        7.PAYMENT
+                                        ==========
+CREATE A TABLE PAYMENT WITH BILL ID AS PRIMARY KEY AND REQUIRED ATTRIBUTES FOR BILL:
+===================================================================================
+
+SQL> CREATE TABLE PAYMENT(BILL_ID INTEGER,CONSTRAINT PAY_ID_pk PRIMARY KEY(BILL_ID),PAY_DATE DATE,AMOUNT VARCHAR(20),TRANSACTION_ID INTEGER);
+
+Table created.
+
+COMMAND: desc payment
+
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ BILL_ID                                   NOT NULL NUMBER(38)
+ PAY_DATE                                           DATE
+ AMOUNT                                             VARCHAR2(20)
+ TRANSACTION_ID                               NUMBER(38)
+
+
+ALTER THE TABLE PAYMENT BY RENAMING A ATTRIBUTE TRANSACTION ID TO TRANS ID:
+=========================================================================
+
+SQL> alter table payment rename column transaction_id to trans_id;
+
+Table altered.
+
+SQL> desc payment;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ BILL_ID                                   NOT NULL NUMBER(38)
+ PAY_DATE                                           DATE
+ AMOUNT                                             VARCHAR2(20)
+ TRANS_ID                                           NUMBER(38)
+ TICKET_ID                                          NUMBER(38)
+
+
+TRUNCATE DATA FROM TABLE PAYMENT:
+================================
+
+SQL> select * from payment;
+
+   BILL_ID PAY_DATE  AMOUNT                 TRANS_ID  TICKET_ID
+---------- --------- -------------------- ---------- ----------
+       900 22-MAR-23 5000                        600        101
+       800 24-MAR-23 13000                       600        103
+       500 25-MAR-23 20000                       200        104
+
+SQL> truncate table payment;
+
+Table truncated.
+
+SQL> select * from payment;
+
+no rows selected
+=====================================================================================
+                                8.TICKET_SEATS
+
+CREATE A TABLE TICKET SEATS WITH ATTRIBUTE TICKET ID:
+====================================================
+
+SQL> CREATE TABLE TICKET_SEATS(TICKET_ID INTEGER);
+
+Table created.
+
+SQL> desc ticket_seats;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ TICKET_ID                                          NUMBER(38)
+
+ALTER THE TABLE TICKET SEATS BY RENAMING THE COLUMN TICKET ID TO TIC ID:
+=======================================================================
+
+SQL> alter table ticket_seats rename column ticket_id to tic_id;
+
+Table altered.
+
+COMMAND: desc ticket_seats;
+
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ TIC_ID                                             NUMBER(38)
+ SEATS                                     NOT NULL NUMBER(38)
+
+=====================================================================================
+                                9.PASSENGER PHNONE NUMBER
+
+CREATE A TABLE PASSENGER PHONE NUMBER WITH PASSENGER ID :
+========================================================
+
+SQL> create table passenger_phnno(psg_id integer, psg_phnno number(10));
+
+Table created.
+
+SQL> ALTER TABLE PASSENGER ADD CONSTRAINT pg_phnno_uk UNIQUE(passenger_phnno);
+
+SQL> desc passenger_phnno;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ PSG_ID                                             NUMBER(38)
+ PSG_PHNNO                                                          NUMBER(10)
+
+=================================================================================
+                                10.FLIGHT SCHEDULE
+
+CREATE A TABLE FLIGHT SCHEDULE WITH FLIGHT ID AND SCHEDULE ID:
+=============================================================
+
+SQL> create table flight_schedule(flight_id integer, schedule_id number);
+
+Table created.
+
+SQL> desc flight_schedule;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ FLIGHT_ID                                          NUMBER(38)
+ SCHEDULE_ID                                     NUMBER
+
+ALTER THE TABLE FLIGHT SCHEDULE BY ADDING A CONSTRAINT FLIGHT ID AND SCHEDULE ID AS FOREIGN KEY:
+===============================================================================================
+
+SQL> ALTER TABLE FLIGHT_SCHEDULE ADD CONSTRAINT FLI_ID_FK FOREIGN KEY(FLIGHT_ID) REFERENCES FLIGHT(FLIGHT_ID);
+
+Table altered.
+
+SQL> DESC FLIGHT_SCHEDULE;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ FLIGHT_ID                                          NUMBER(38)
+ SCHEDULE_ID                                        NUMBER
+
+COMMAND: ALTER TABLE FLIGHT_SCHEDULE ADD CONSTRAINT SCH_ID_FK FOREIGN KEY(SCHEDULE_ID) REFERENCES SCHEDULE(SCHEDULE_ID);
+
+Table altered.
+
+SQL> DESC FLIGHT_SCHEDULE;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ FLIGHT_ID                                          NUMBER(38)
+ SCHEDULE_ID                                    NUMBER
+
+DROP THE FOREIGN KEY CONSTARINT FROM FLIGHT ID:
+==============================================
+
+SQL> ALTER FLIGHT_SCHEDULE DROP CONSTRAINT FLI_ID_FK;
+
+Table altered.
+
+SQL> DESC FLIGHT_SCHEDULE;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ FLIGHT_ID                                          NUMBER(38)
+ SCHEDULE_ID                                    NUMBER
+
+===================================================================================
+
+                                11.EMPLOYEE PROVIDES FOOD
+
+CREATE A TABLE PROVIDES WITH FOOD ID AND EMP ID:
+==============================================
+
+SQL> create table Provides(food_id integer, emp_id number);
+
+Table created.
+
+COMMAND: desc provides;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ FOOD_ID                                            NUMBER(38)
+
+ EMP_ID                                             NUMBER
+
+
+ALTER THE TABLE PROVIDES BY ADDING FOOD ID AND EMPLOY ID AS FOREIGN KEY:
+========================================================================
+
+SQL> ALTER TABLE PROVIDES ADD CONSTRAINT FO_ID_FK FOREIGN KEY(FOOD_ID) REFERENCES FOOD(FOOD_ID);
+
+Table altered.
+
+COMMAND: DESC PROVIDES;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ FOOD_ID                                            NUMBER(38)
+ EMP_ID                                             NUMBER
+
+SQL> ALTER TABLE PROVIDES ADD CONSTRAINT EMPLY_ID_FK FOREIGN KEY(EMP_ID) REFERENCES EMPLOY(EMP_ID);
+
+Table altered.
+
+COMMAND:  DESC PROVIDES;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ FOOD_ID                                            NUMBER(38)
+ EMP_ID                                             NUMBER
+
+=====================================================================================
+
+                                12.EMPLOYEE MOBILE NUMBER
+
+CREATE A TABLE EMPLOYEE MOBILE NUMBER WITH EMP ID AND EMP MOBILE NUMBER:
+=========================================================================
+
+COMMAND: create table Employee_Mobile_no(emp_mobile_no number(10),emp_id number);
+
+Table created.
+
+COMMAND: desc employee_mobile_no
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ EMP_MOBILE_NO                          NUMBER(10)
+ EMP_ID                                             NUMBER
+
+ALTER THE TABLE EMPLOYEE MOBILE NO BY ADDING EMP ID AS FOREIGN KEY:
+===================================================================
+
+SQL> ALTER TABLE EMPLOYEE_MOBILE_NO ADD CONSTRAINT EMPLOYEE_ID_FK FOREIGN KEY(EMP_ID) REFERENCES EMPLOY(EMP_ID);
+
+Table altered.
+
+SQL> DESC EMPLOYEE_MOBILE_NO;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ EMP_MOBILE_NO
+ NUMBER(10)
+ EMP_ID                                             NUMBER
+
+=====================================================================================
+                                                13.FOOD
+
+CREATE A TABLE FOOD WITH FOOD ID AS PRIMARY ID AND REMAINING ATTRIBUTES:
+=======================================================================
+
+SQL> create table Food(food_id INTEGER,CONSTRAINT food_id_pk PRIMARY KEY(food_id),dealer_name varchar(10),food_name varchar(10),food_type varchar(2),no_items integer);
+
+Table created.
+
+COMMAND: desc food;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ FOOD_ID                                   NOT NULL NUMBER(38)
+ DEALER_NAME                                        VARCHAR2(10)
+ FOOD_NAME                                          VARCHAR2(10)
+ FOOD_TYPE                                          VARCHAR2(2)
+ NO_ITEMS                                           NUMBER(38)
+
+ALTER  THE TABLE FOOD BY ADDING EMP ID AS FOREIGN KEY:
+======================================================
+
+COMMAND: ALTER TABLE FOOD ADD CONSTRAINT EMPLOY_ID_FK FOREIGN KEY(EMP_ID) REFERENCES EMPLOY(EMP_ID);
+
+Table altered.
+
+SQL> desc food;
+
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ FOOD_ID                                   NOT NULL NUMBER(38)
+ DEALER_NAME                                        VARCHAR2(10)
+ FOOD_NAME                                          VARCHAR2(10)
+ FOOD_TYPE                                          VARCHAR2(2)
+ NO_ITEMS                                           NUMBER(38)
+ EMP_ID                                             NUMBER(5)
+
+=====================================================================================
+                                14.MANAGES
+
+CREATE A TABLE MANAGES WITH FLIGHT ID AND EMPLOYEE ID:
+=====================================================
+
+COMMAND: create table manages(flight_id integer,emp_id integer);
+Table created.
+
+COMMAND: DESC MANAGES;
+
+ Name                                                                Null?    Type
+ ----------------------------------------------------------------------------------------------------------------------------------------------- -------- ------------------------------------------------------------------------------------------------
+ EMP_ID                         NUMBER(38)
+
+ FLIGHT_ID                      NUMBER(38)
+
+
+
+ =====================================================================================
+DROP  THE TABLE DUMMY:
+======================
+
+ COMMAND: DESC DUMMY
+        Name                                      Null?    Type
+        ----------------------------------------- -------- ----------------------------
+        NAME                                             VARCHAR2(10)
+        AGE                                                NUMBER(38)
+
+ COMMAND: drop table dummy;
+
+  Table dropped
+
+  COMMAND: desc dummy;
+  ERROR:
+  ORA-04043: object dummy does not exist
+======================================================================================
+
+DISPLAYING OF TABLES:
+
+1.desc passenger;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ PSG_ID                                    NOT NULL NUMBER(38)
+ NAME                                      NOT NULL VARCHAR2(25)
+ PSG_PWD                                            NUMBER(38)
+ ADDRESS                                            VARCHAR2(20)
+ PSG_EMAIL                                          VARCHAR2(20)
+ PSG_DOB                                            DATE
+ GENDER                                             VARCHAR2(2)
+
+=====================================================================================
+2. desc ticket;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ TICKET_ID                                 NOT NULL NUMBER(38)
+ AMOUNT                                             VARCHAR2(15)
+ DATE_BOOKING                                       DATE
+ DATE_CANCEL                                        DATE
+ NUM_SEATS                                          VARCHAR2(10)
+ BOOK_ID                                            VARCHAR2(10)
+ CANCEL_ID                                          VARCHAR2(10)
+ FLIGHT_ID                                          NUMBER(38)
+ BILL_ID                                            NUMBER(38)
+ PSG_ID                                             NUMBER(38)
+
+==================================================================================
+3. desc payment;
+  Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ BILL_ID                                   NOT NULL NUMBER(38)
+ PAY_DATE                                           DATE
+ AMOUNT                                             VARCHAR2(20)
+ TRANS_ID                                           NUMBER(38)
+ TICKET_ID                                          NUMBER(38)
+=================================================================================
+4. desc flight;
+  Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ FLIGHT_ID                                 NOT NULL NUMBER(38)
+ FLIGHT_NAME                               NOT NULL VARCHAR2(10)
+ MODEL                                              VARCHAR2(25)
+ AVAILABILITY                                       NUMBER(3)
+=================================================================================
+5. desc employ;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ EMP_ID                                    NOT NULL NUMBER(38)
+ NAME                                      NOT NULL  VARCHAR2(25)
+ EMP_PWD                                            NUMBER(38)
+ ROLE                                               VARCHAR2(25)
+ EMP_EXPERIENCE                                     NUMBER(38)
+ EMP_SAL                                            NUMBER(38)
+ EMP_OUALI                                          VARCHAR2(25)
+ EMP_EMAIL                                          VARCHAR2(30)
+ EMP_MOBILE_NO                                      NUMBER(38)
+ EMP_ADDR                                           VARCHAR2(50)
+ EMP_DOB                                            DATE
+ GENDER                                             VARCHAR2(2)
+====================================================================================
+6. desc schedule;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ SCHEDULE_ID                               NOT NULL NUMBER(38)
+ SOURCE                                             VARCHAR2(20)
+ DESTINATION                                        VARCHAR2(20)
+ S_TIME                                             VARCHAR2(10)
+ D_TIME                                             VARCHAR2(10)
+ EMP_ID                                             NUMBER(10)
+ DATE_DES                                           DATE
+ DATE_SOURCE                                        DATE
+====================================================================================
+7. desc food;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ FOOD_ID                                   NOT NULL NUMBER(38)
+ DEALER_NAME                               NOT NULL VARCHAR2(10)
+ FOOD_NAME                                          VARCHAR2(10)
+ FOOD_TYPE                                          VARCHAR2(2)
+ NO_ITEMS                                           NUMBER(38)
+=====================================================================================
+8. desc ticket_seats;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ TIC_ID                                             NUMBER(38)
+ SEATS                                     NOT NULL NUMBER(38)
+===================================================================================
+9. desc provides;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ FOOD_ID                                            NUMBER(38)
+ EMP_ID                                             NUMBER
+=====================================================================================
+10. desc manages;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ EMP_ID                                             NUMBER(38)
+ FLIGHT_ID                                          NUMBER(38)
+====================================================================================
+11. desc passenger_phnno;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ PSG_ID                                             NUMBER(38)
+ PSG_NUM                                            NUMBER(10)
+====================================================================================
+12. desc flight_schedule;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ FLIGHT_ID                                          NUMBER(38)
+ SCHEDULE_ID                                        NUMBER
+=====================================================================================
+13. desc employee_mobile_no;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ EMP_MOBILE_NO                                      NUMBER(10)
+ EMP_ID                                             NUMBER
+======================================================================================
+14. desc travels;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ TRA_DATE                                           DATE
+ PSG_ID                                             NUMBER(38)
+ FLIGHT_ID                                          NUMBER(38)
+=============================================
+[21bcs035@mepcolinux ex2]$exit
+exit
+
+Script done on Wed 12 Apr 2023 11:17:13 AM IST
+[21bcs035@mepcolinux ex2]$cd ..
+[21bcs035@mepcolinux dbms]$cd ex3
+[21bcs035@mepcolinux ex3]$ls
+dml1.txt  dml2.txt  dml.txt  ex3.prn  ex3.txt
+[21bcs035@mepcolinux ex3]$cat ex3.prn
+Script started on Wed 12 Apr 2023 11:40:45 AM IST
+[21bcs035@mepcolinux ex3]$cat dml1.prn
+cat: dml1.prn: No such file or directory
+[21bcs035@mepcolinux ex3]$cat dml1.txt
+                                                                                        EXERCISE:3
+                                                                                        ===========
+                                                                        IMPLEMENTATION OF DML COMMANDS
+NAME:M.YOGAA SHREE
+ROLL:21BCS035
+
+1.PASSENGER:
+
+INSERT VALUES INTO PASSENGER TABLE:
+==================================
+
+SQL> INSERT INTO PASSENGER VALUES(102,'imaya',1239,'Tuti','imaya@gmail.com','12-jul-90','fm');
+
+1 row created.
+
+
+DISPLAY ALL THE DATA AVAILABLE FROM TABLE PASSENGER:
+===================================================
+
+SQL> select * from passenger;
+
+   PSG_ID NAME                         PSG_PWD ADDRESS              PSG_EMAIL            PSG_DOB   GE
+---------- ------------------------- ---------- -------------------- -------------------- --------- --
+       102 imaya                           1239 Tuti                 imaya@gmail.com      12-JUL-90 fm
+       101 nila                            2222 Tvl                  nila@gmail.com       17-JUN-99 fm
+       103 rafi                            7777 Vnr                  rafi@gmail.com       19-MAR-96 fm
+       104 riya                            8989 madurai              riya@gmail.com       20-JAN-97 fm
+
+
+DISPLAY NAME FROM TABLE PASSENGER:
+=================================
+
+COMMAND: SELECT NAME FROM PASSENGER;
+
+NAME
+-------------------------
+NILA
+imaya
+rutra
+kavin
+
+DISPLAY PASSENGER ID AND PASSENGER NAME FROM TABLE PASSENGER:
+============================================================
+
+COMMAND: SELECT PSG_ID,NAME FROM PASSENGER;
+
+    PSG_ID       NAME
+---------- -------------------------
+       101       nila
+       102       imaya
+       103       rafi
+       104       riya
+
+
+RENAME NAME AS PSG NAME IN TABLE PASSENGER:
+==========================================
+
+COMMAND: SELECT NAME AS PSG_NAME FROM PASSENGER;
+
+PSG_NAME
+-------------------------
+nila
+imaya
+rafi
+riya
+
+DISPLAY NAME AND ID OF PASSENGERS WHOSE GENDER IS MALE:
+======================================================
+
+COMMAND:SELECT PSG_ID , NAME FROM PASSENGER WHERE GENDER='M';
+
+no rows selected
+
+DISPLAY NAME AND ID OF PASSENGERS WHOSE GENDER IS FEMALE:
+========================================================
+
+COMMAND:SELECT PSG_ID , NAME FROM PASSENGER WHERE GENDER='fm';
+
+    PSG_ID NAME
+---------- -------------------------
+       102 imaya
+       101 nila
+       103 rafi
+       104 riya
+
+DISPLAY NAME, ID , GENDER WHOSE ID IS 101,102,103::
+======================================================
+COMMAND:SELECT PSG_ID,NAME,GENDER FROM PASSENGER WHERE ADDRESS NOT IN('madurai','vnr','tvl');
+
+    PSG_ID NAME                      GE
+---------- ------------------------- --
+       102 SHREE                     fm
+       101 nila                      m
+       103 rafi                      fm
+
+DISPLAY NAME, ID , GENDER WHOSE ID IS  101,102,103:
+===================================================
+COMMAND:SELECT PSG_ID,NAME,GENDER FROM PASSENGER WHERE psg_id  IN(101,102,103);
+
+    PSG_ID NAME                      GE
+---------- ------------------------- --
+       102 SHREE                     fm
+       101 nila                      m
+       103 rafi                      fm
+
+
+DISPLAY THE ID AND NAME FROM PASSENGER WHOSE ID IS BETWEEN 101 AND 104:
+======================================================================
+COMMAND: SELECT PSG_ID , NAME FROM PASSENGER WHERE PSG_ID BETWEEN 101 AND 104;
+
+    PSG_ID NAME
+---------- -------------------------
+       102 imaya
+       101 nila
+       103 rafi
+       104 riya
+
+DISPLAY THE DETAILS OF THE PASSENGER WHOSE ADDRESS IS NOT NULL:
+==================================================================
+SELECT PSG_ID,NAME FROM PASSENGER WHERE ADDRESS IS NOT NULL;
+
+    PSG_ID NAME
+---------- -------------------------
+       102 imaya
+       101 nila
+       103 rafi
+       104 riya
+
+DISPLAY THE COUNT OF ID , PWD IN PASSENGER:
+==========================================
+COMMAND:select count(psg_id),count(*),count(psg_pwd) from passenger;
+
+COUNT(PSG_ID)   COUNT(*) COUNT(PSG_PWD)
+------------- ---------- --------------
+            4          4              4
+
+DISPLAY THE AVERAGE OF THE PASSWORD OF PASSENGER WHOSE ID IS 101:
+================================================================
+
+COMMAND:select avg(psg_pwd) from passenger where psg_id=101;
+
+AVG(PSG_PWD)
+------------
+        4444
+DISPLAY THE LENGTH AND DISPLAY THE UPPER AND LOWER CASES OF THE NAMES:
+=====================================================================
+
+COMMAND:select lower(NAME),upper(NAME),length(NAME) from PASSENGER;
+
+LOWER(NAME)               UPPER(NAME)               LENGTH(NAME)
+------------------------- ------------------------- ------------
+shree                     SHREE                                5
+nila                      NILA                                 4
+rafi                      RAFI                                 4
+riya                      RIYA                                 4
+
+DISPLAY NAMECUMMAIL OF THE PASSENGER:
+=====================================
+COMMAND:select NAME||PSG_EMAIL as namecumemail from PASSENGER;
+
+NAMECUMEMAIL
+---------------------------------------------
+SHREEimaya@gmail.com
+nilanila@gmail.com
+rafirafi@gmail.com
+riyariya@gmail.com
+
+DISPLAY THE DETAILS OF THE PASSENGER WHOSE ID IS 102 AND NAME IS SHREE:
+=======================================================================
+
+COMMAND:select * from passenger where psg_id=102 and name='SHREE';
+
+    PSG_ID NAME                         PSG_PWD ADDRESS              PSG_EMAIL            PSG_DOB   GE
+---------- ------------------------- ---------- -------------------- -------------------- --------- --
+       102 SHREE                           2478 Tuti                 imaya@gmail.com      12-JUL-90 fm
+
+DISPLAY ALL THE ID (ALLOW DUPLICATES):
+=====================================
+
+COMMAND:select all psg_id from passenger;
+
+    PSG_ID
+----------
+       101
+       102
+       103
+       104
+
+DISPLAY NAME OF THE PASSENGERS WHICH HAS ALPHABET A:
+===================================================
+
+COMMAND:select name from passenger where name like '%a%';
+
+NAME
+-------------------------
+nila
+rafi
+riya
+
+SORT THE NAMES IN PASSENGER:
+===========================
+
+COMMAND:select psg_id,name from passenger order by name;
+
+    PSG_ID NAME
+---------- -------------------------
+       102 SHREE
+       101 nila
+       103 rafi
+       104 riya
+
+SORT NAME IN ASCENDING AND ID IN DESCENDING ORDER:
+=================================================
+COMMAND:select psg_id,name from passenger order by psg_id desc,name asc;
+
+    PSG_ID NAME
+---------- -------------------------
+       104 riya
+       103 rafi
+       102 SHREE
+       101 nila
+
+SORT THE FIRST AND SECOND COLUMNS IN PASSENGER:
+================================================
+COMMAND:select psg_id, name from passenger order by 2,1;
+
+    PSG_ID NAME
+---------- -------------------------
+       102 SHREE
+       101 nila
+       103 rafi
+       104 riya
+
+DISPLAY THE AVERAGE OF THE PASSWORDS WITH THIER ID:
+===================================================
+
+COMMAND:select psg_id,avg(psg_pwd) from passenger group by psg_id;
+
+    PSG_ID AVG(PSG_PWD)
+---------- ------------
+       102         2478
+       101         4444
+       103        15554
+       104        17978
+
+
+SELECT ALL THE PASSENGER DETAILS IF THEIR DOB STARTS WITH 12:
+============================================================
+
+COMMAND:SELECT * FROM PASSENGER WHERE PSG_DOB LIKE '12%';
+
+    PSG_ID NAME                         PSG_PWD ADDRESS              PSG_EMAIL            PSG_DOB   GE
+---------- ------------------------- ---------- -------------------- -------------------- --------- --
+       102 SHREE                           2478 Tuti                 imaya@gmail.com      12-JUL-90 fm
+
+
+SELECT ALL THE PASSENGER DETAILS IF THEIR DOB ENDS WITH 96:
+===========================================================
+
+COMMAND:SELECT * FROM PASSENGER WHERE PSG_DOB LIKE '%96';
+
+    PSG_ID NAME                         PSG_PWD ADDRESS              PSG_EMAIL            PSG_DOB   GE
+---------- ------------------------- ---------- -------------------- -------------------- --------- --
+       103 rafi                           15554 Vnr                  rafi@gmail.com       19-MAR-96 fm
+
+UPDATE THE PASSENGER GENDER AS MALE WHOSE ID IS 101:select psg_id,name from passenger order by name;
+====================================================================================================
+
+    PSG_ID NAME
+---------- -------------------------
+       102 SHREE
+       101 nila
+       103 rafi
+       104 riya
+
+
+UPADTE THE PASSENGER GENDER AS MALE WHOSE ID IS 102:
+====================================================
+
+COMMAND:UPDATE PASSENGER SET GENDER='m' WHERE PSG_ID=101;
+
+1 row updated.
+
+SQL> SELECT * FROM PASSENGER;
+
+    PSG_ID NAME                         PSG_PWD ADDRESS              PSG_EMAIL            PSG_DOB   GE
+---------- ------------------------- ---------- -------------------- -------------------- --------- --
+       102 SHREE                           2478 Tuti                 imaya@gmail.com      12-JUL-90 fm
+       101 nila                            4444 Tvl                  nila@gmail.com       17-JUN-99 m
+       103 rafi                           15554 Vnr                  rafi@gmail.com       19-MAR-96 fm
+       104 riya                           17978 madurai              riya@gmail.com       29-JUL-04 fm
+
+UPDATE THE CITY AS COIMBATORE WHOSE PSG ID IS 103:
+==================================================
+
+COMMAND: UPDATE PASSENGER SET CITY = 'COIMBATORE' where PSG_ID=103;
+
+1 row updated.
+
+COMMAND: SELECT PSG_ID,CITY FROM PASSENGER;
+
+    PSG_ID CITY
+---------- --------------------
+       101 TVL
+       102 Tuti
+       103 COIMBATORE
+       104 Theni
+
+UPDATE THE NAME AS SHREE WHOSE PSG ID IS 102:
+============================================
+
+COMMAND:UPDATE PASSENGER SET NAME = 'SHREE' where PSG_ID=102;
+
+1 row updated.
+
+SQL> select * from passenger;
+
+    PSG_ID NAME                         PSG_PWD ADDRESS              PSG_EMAIL            PSG_DOB   GE
+---------- ------------------------- ---------- -------------------- -------------------- --------- --
+       102 SHREE                           1239 Tuti                 imaya@gmail.com      12-JUL-90 fm
+       101 nila                            2222 Tvl                  nila@gmail.com       17-JUN-99 fm
+       103 rafi                            7777 Vnr                  rafi@gmail.com       19-MAR-96 fm
+       104 riya                            8989 madurai              riya@gmail.com       20-JAN-97 fm
+
+UPDATE THE DOB AS JUL 29 2004 WHOSE ID IS 104:
+==============================================
+
+COMMAND: UPDATE PASSENGER SET PSG_DOB = '29-JUL-2004' where PSG_ID=104;
+
+1 row updated.
+
+SQL> SELECT * FROM PASSENGER;
+
+    PSG_ID NAME                         PSG_PWD ADDRESS              PSG_EMAIL            PSG_DOB   GE
+---------- ------------------------- ---------- -------------------- -------------------- --------- --
+       102 SHREE                           1239 Tuti                 imaya@gmail.com      12-JUL-90 fm
+       101 nila                            2222 Tvl                  nila@gmail.com       17-JUN-99 fm
+       103 rafi                            7777 Vnr                  rafi@gmail.com       19-MAR-96 fm
+       104 riya                            8989 madurai              riya@gmail.com       29-JUL-04 fm
+
+
+UPDATE ALL THE PASSENGER PASSWORD AS DOUBLE THE OLD PASSWORD:
+============================================================
+
+COMMAND:UPDATE PASSENGER SET PSG_PWD = PSG_PWD*2;
+
+4 rows updated.
+
+SQL> SELECT * FROM PASSENGER;
+
+    PSG_ID NAME                         PSG_PWD ADDRESS              PSG_EMAIL            PSG_DOB   GE
+---------- ------------------------- ---------- -------------------- -------------------- --------- --
+       102 SHREE                           2478 Tuti                 imaya@gmail.com      12-JUL-90 fm
+       101 nila                            4444 Tvl                  nila@gmail.com       17-JUN-99 fm
+       103 rafi                           15554 Vnr                  rafi@gmail.com       19-MAR-96 fm
+       104 riya                           17978 madurai              riya@gmail.com       29-JUL-04 fm
+
+DELETE THE DETAILS OF THE PASSENGER WHOSE ID IS 104:
+====================================================
+
+COMMAND: DELETE FROM PASSENGER WHERE PSG_ID =104;
+
+1 row deleted.
+
+COMMAND: SELECT PSG_ID,CITY FROM PASSENGER;
+
+    PSG_ID CITY
+---------- --------------------
+       101 TVL
+       102 Tuti
+       103 COIMBATORE
+
+
+==============================================================================================
+                        2.PAYMENT
+
+INSERT THE  VALUES IN TABLE PAYMENT:
+=====================================
+
+COMMAND: INSERT INTO PAYMENT VALUES(900,'22-MAR-23',5000,600,101);
+
+1 row created.
+
+DISPLAY  ALL THE DATA AVAILABLE IN TABLE PAYMENT:
+================================================
+
+SQL> SELECT * FROM PAYMENT;
+
+   BILL_ID PAY_DATE  AMOUNT               TRANSACTION_ID  TICKET_ID
+---------- --------- -------------------- -------------- ----------
+       900 22-MAR-23 5000                            600        101
+       700 23-MAR-23 7000                            700        102
+       800 24-MAR-23 13000                           600        103
+       500 25-MAR-23 15000                           200        104
+
+DISPLAY ALL TRANSACTION ID FROM PAYMENT:
+=======================================
+
+COMMAND:SELECT ALL TRANS_ID FROM PAYMENT;
+
+  TRANS_ID
+----------
+       707
+       700
+       600
+       200
+SELECT THE AMOUNT BY INCREMENTING 1000:
+======================================
+
+COMMAND:SELECT AMOUNT+1000 AS AMOUNT FROM PAYMENT ;
+
+    AMOUNT
+----------
+     13000
+     15000
+     27000
+     31000
+
+DISPLAY THE ID AND AMOUNT WHOSE TRANS ID IS NOT NULL:
+=====================================================
+
+COMMAND:SELECT BILL_ID,AMOUNT FROM PAYMENT WHERE TRANS_ID IS NOT NULL;
+
+   BILL_ID AMOUNT
+---------- --------------------
+       601 12000
+       700 14000
+       800 26000
+       500 30000
+
+
+DISPLAY PAYMENT DATE FROM PAYMENT:
+==================================
+
+SQL> SELECT PAY_DATE FROM PAYMENT;
+
+PAY_DATE
+---------
+22-MAR-23
+23-MAR-23
+24-MAR-23
+25-MAR-23
+
+DISPLAY PAYMENT DATE AND BILL ID FROM PAYMENT:
+==============================================
+
+SQL> SELECT PAY_DATE,BILL_ID FROM PAYMENT;
+
+PAY_DATE     BILL_ID
+--------- ----------
+22-MAR-23        900
+23-MAR-23        700
+24-MAR-23        800
+25-MAR-23        500
+
+DISPLAY THE ID WHOSE AMOUNT IS BETWEEN 12000 AND 14000:
+=====================================================
+
+COMMAND:SELECT BILL_ID FROM PAYMENT WHERE AMOUNT BETWEEN 10000 AND 14000;
+
+   BILL_ID
+----------
+       601
+       700
+
+DISPLAY THE ID , TRANS ID AND AMOUNT WHOSE AMOUNT IS IN 26000 AND 30000:
+=======================================================================
+
+COMMAND: SELECT BILL_ID,TRANS_ID,AMOUNT FROM PAYMENT WHERE AMOUNT IN(26000,30000);
+
+   BILL_ID   TRANS_ID AMOUNT
+---------- ---------- --------------------
+       800        600 26000
+       500        200 30000
+
+DISPLAY ID , TRAND ID, AMOUNT WHOSE AMOUNT IS GREATER THAN 20000:
+================================================================
+
+COMMAND: SELECT BILL_ID,TRANS_ID,AMOUNT FROM PAYMENT WHERE AMOUNT>20000;
+
+   BILL_ID   TRANS_ID AMOUNT
+---------- ---------- --------------------
+       800        600 26000
+       500        200 30000
+
+DISPLAY ID WHOSE SUM OF THE AMOUNT IS GREATER THAN 1000:
+========================================================
+
+COMMAND:SELECT BILL_ID FROM PAYMENT GROUP BY BILL_ID HAVING SUM(AMOUNT)>1000;
+
+   BILL_ID
+----------
+       500
+       601
+       700
+       800
+
+DISPLAY THE DATE BETWEEN CURRENT DATE AND PAYMENT DATE:
+=======================================================
+
+COMMAND:select months_between(sysdate,PAY_DATE),BILL_ID from PAYMENT;
+
+MONTHS_BETWEEN(SYSDATE,PAY_DATE)    BILL_ID
+-------------------------------- ----------
+                      -3.8070766        601
+                      -2.5490121        700
+                       .35421371        800
+                      .321955645        500
+
+
+UPDATE AMOUNT AS 20000 WHOSE BILL ID IS 500:
+============================================
+
+
+SQL> UPDATE PAYMENT SET AMOUNT=20000 WHERE BILL_ID=500;
+
+1 row updated.
+
+SQL> SELECT AMOUNT,BILL_ID FROM PAYMENT;
+
+AMOUNT                  BILL_ID
+-------------------- ----------
+5000                        900
+7000                        700
+13000                       800
+20000                       500
+
+
+UPDATE THE AMOUNT OF ALL THE DATA BY DOUBLING THE OLD AMOUNT:
+============================================================
+
+COMMAND:UPDATE PAYMENT SET AMOUNT=AMOUNT*2;
+
+4 rows updated.
+
+SQL> SELECT * FROM PAYMENT;
+
+   BILL_ID PAY_DATE  AMOUNT                 TRANS_ID  TICKET_ID
+---------- --------- -------------------- ---------- ----------
+       601 29-JUL-23 12000                       707        401
+       700 23-MAR-23 14000                       700        102
+       800 24-MAR-23 26000                       600        103
+       500 25-MAR-23 30000                       200        104
+
+UPDATE PAYMENT DATE AS 21 JUNE 23 WHOSE BILL ID IS 700:
+======================================================
+
+COMMAND:UPDATE PAYMENT SET PAY_DATE='21-JUN-23' WHERE BILL_ID=700;
+
+1 row updated.
+
+SQL> SELECT * FROM PAYMENT;
+
+   BILL_ID PAY_DATE  AMOUNT                 TRANS_ID  TICKET_ID
+---------- --------- -------------------- ---------- ----------
+       601 29-JUL-23 12000                       707        401
+       700 21-JUN-23 14000                       700        102
+       800 24-MAR-23 26000                       600        103
+       500 25-MAR-23 30000                       200        104
+
+
+DELETE DETAILS FROM TABLE PAYMENT WHOSE BILL ID IS 700:
+=======================================================
+
+COMMAND: DELETE FROM PAYMENT WHERE BILL_ID=700;
+
+1 row deleted.
+
+SQL> SELECT * FROM PAYMENT;
+
+   BILL_ID PAY_DATE  AMOUNT               TRANSACTION_ID  TICKET_ID
+---------- --------- -------------------- -------------- ----------
+       900 22-MAR-23 5000                            600        101
+       800 24-MAR-23 13000                           600        103
+       500 25-MAR-23 20000                           200        104
+================================================================================================
+                        3.FLIGHT
+
+INSERT THE VALUES NEEDED FOR THE TABLE FLIGHT:
+=============================================
+
+COMMAND: INSERT INTO FLIGHT VALUES(401,'KINGFISHER','XX5',60);
+
+1 row created.
+
+
+SQL> SELECT * FROM FLIGHT;
+
+ FLIGHT_ID FLIGHT_NAM MODEL                     AVAILABILITY
+---------- ---------- ------------------------- ------------
+       401 KINGFISHER XX5                                 60
+       402 KINGFISHER XX7                                 70
+       403 KINGFISHER XX8                                 80
+       404 KINGFISHER XX9                                 90
+       405 KINGFISHER XX4                                 40
+============================================================================================================
+                        4.EMPLOYEE
+
+INSERT THE VALUES NEEDED FOR THE TABLE EMPLOYEE:
+===============================================
+
+insert into employ values(201,'abdul',3333,'manager',5,10000,'BE','abdul@gmail.com',90909090,'tvl','24-feb-20','m');
+
+1 row created.
+
+DISPLAY ALL THE DATA AVALIABLE IN TABLE EMPLOYEE:
+================================================
+
+COMMAND: select * from employ;
+
+EMP_ID  NAME    EMP_PWD         ROLE    EMP_EXPERIENCE    EMP_SAL  EMP_OUALI
+---------- ------------------------- ---------- -------------------------
+EMP_EMAIL     EMP_MOBILE_NO     EMP_ADDR    EMP_DOB   GENDER
+-------------------------------------------------------------------------
+201    abdul      3333     manager        5                10000           BE
+abdul@gmail.com   90909090   Tvl          24-FEB-20              m
+
+DISPLAY ALL THE NAMES FROM THE TABLE EMPLOYEE:
+==============================================
+
+COMMAND: SELECT NAME FROM EMPLOY;
+
+NAME
+-------------------------
+KRISH
+ABDUL
+SALIM
+ROSE
+
+DISPLAY ALL THE EMPLOYEE ID AND ITS CORRESPONDING NAMES FROM TABLE EMPLOYEE:
+===========================================================================
+
+SQL> SELECT EMP_ID,NAME FROM EMPLOY;
+
+    EMP_ID NAME
+---------- -------------------------
+       201 KRISH
+       202 ABDUL
+       203 SALIM
+       204 ROSE
+
+UPDATE EMP ADDRESS AS YYYY WHOSE EMP ID IS 203:
+===============================================
+
+COMMAND: UPDATE EMPLOY SET EMP_ADDR='YYYY' WHERE EMP_ID=203;
+
+1 row updated.
+
+SQL> SELECT EMP_ID,EMP_ADDR FROM EMPLOY;
+
+    EMP_ID EMP_ADDR
+---------- --------------------------------------------------
+       201 XXXX
+       202 XXXX
+       203 YYYY
+       204 MNMN
+
+DELETE THE DATA OF THE EMPLOYEE WHOSE ID IS 202:
+===============================================
+
+COMMAND: DELETE FROM EMPLOY WHERE EMP_ID=202;
+
+1 row deleted.
+
+SQL> SELECT EMP_ID,EMP_ADDR FROM EMPLOY;
+
+    EMP_ID EMP_ADDR
+---------- --------------------------------------------------
+       201 xxxx
+       203 YYYY
+       204 MNMN
+
+====================================================================================================
+
+[21bcs035@mepcolinux ex3]$cat dml2.txt
+                                DML COMMANDS
+                                EXERCISE 3
+M.YOGAA SHREE
+21BCS035
+===========================================================
+
+                        5.SCHEDULE
+
+INSERT VALUES INTO THE TABLE SCHEDULE:
+=====================================
+
+COMMAND: INSERT INTO SCHEDULE VALUES(1001,'DELHI','BOMBAY',2230,0140,201,401,'23-JUN-23','24-JUN-23');
+
+1 row created.
+
+COMMAND: SELECT * FROM SCHEDULE;
+
+SCHEDULE_ID SOURCE               DESTINATION          S_TIME     D_TIME
+----------- -------------------- -------------------- ---------- ----------
+    EMP_ID  FLIGHT_ID DATE_DES  DATE_SOUR
+---------- ---------- --------- ---------
+       1001 DELHI                BOMBAY               2230       140
+       201        401 23-JUN-23 24-JUN-23
+
+
+==========================================================================================
+
+                        6.FOOD
+
+INSERT VALUES INTO THE TABLE FOOD:
+=================================
+
+COMMAND: INSERT INTO FOOD VALUES(301,'RRR','NOODLES','NV',5,201);
+
+1 row created.
+
+
+SQL> SELECT * FROM FOOD;
+
+   FOOD_ID DEALER_NAM FOOD_NAME  FO   NO_ITEMS     EMP_ID
+---------- ---------- ---------- -- ---------- ----------
+       301 RRR        NOODLES    NV          5        201
+
+==============================================================================================
+                                7.TICKET
+
+INSERT VALUES INTO THE TABLE TICKET:
+===================================
+
+COMMAND: INSERT INTO TICKET VALUES(501,5000,'04-MAR-23',NULL,4,701,NULL,401,900,101);
+
+1 row created.
+
+
+DISPLAY ALL THE DATA AVAILABLE IN TABLE TICKET:
+==============================================
+
+COMMAND: SELECT * FROM TICKET;
+
+ SELECT * FROM TICKET;
+
+ TICKET_ID AMOUNT          DATE_BOOK DATE_CANC NUM_SEATS  BOOK_ID    CANCEL_ID   FLIGHT_ID    BILL_ID     PSG_ID
+---------- --------------- --------- --------- ---------- ---------- ---------- ---------- ---------- ----------
+       501 5000            04-MAR-23           4          701                          501        700        101
+       502 2000            05-MAR-23           2          702                          502        800        102
+       503 8000            06-MAR-23           5          703                          501        500        103
+       504 10000           07-MAR-23           6          704                          502        601        104
+
+DISPLAY BILL ID FROM TABLE TICKET:
+=================================
+
+COMMAND: SELECT BILL_ID FROM TICKET;
+
+   BILL_ID
+----------
+       900
+       800
+       500
+       800
+
+DISPLAY BILL ID AND ITS CORESPONDING AMOUNT:
+============================================
+
+SQL> SELECT AMOUNT,BILL_ID FROM TICKET WHERE AMOUNT>2000;
+
+AMOUNT             BILL_ID
+--------------- ----------
+5000                   900
+8000                   500
+10000                  800
+
+DISPLAY TICKET ID , BILL ID, AMOUNT WHOSE AMOUNT IS GREATER THAN 8000:
+====================================================================
+
+COMMAND:SELECT TICKET_ID,AMOUNT,BILL_ID FROM TICKET WHERE AMOUNT>8000;
+
+ TICKET_ID AMOUNT             BILL_ID
+---------- --------------- ----------
+       504 10000                  601
+
+DISPLAY THE DETAILS WHOSE AMOUNT IS BETWEEN 5000 AND 8000:
+=========================================================
+
+COMMAND:SELECT * FROM TICKET WHERE AMOUNT BETWEEN 4000 AND 8000;
+
+ TICKET_ID AMOUNT          DATE_BOOK DATE_CANC NUM_SEATS  BOOK_ID    CANCEL_ID   FLIGHT_ID    BILL_ID     PSG_ID
+---------- --------------- --------- --------- ---------- ---------- ---------- ---------- ---------- ----------
+       501 5000            04-MAR-23           4          701                          501        700        101
+       503 8000            06-MAR-23           5          703                          501        500        103
+
+DISPLAY THE DETALS OF THE TICKET WHOSE DATE_BOOK IS NOT NULL:
+============================================================
+
+COMMAND:SELECT * FROM TICKET WHERE BOOK_ID IS NOT NULL;
+
+ TICKET_ID AMOUNT          DATE_BOOK DATE_CANC NUM_SEATS  BOOK_ID    CANCEL_ID   FLIGHT_ID    BILL_ID     PSG_ID
+---------- --------------- --------- --------- ---------- ---------- ---------- ---------- ---------- ----------
+       501 5000            04-MAR-23           4          701                          501        700        101
+       502 2000            05-MAR-23           2          702                          502        800        102
+       503 8000            06-MAR-23           5          703                          501        500        103
+       504 10000           07-MAR-23           6          704                          502        601        104
+
+
+UPDATE AMOUNT AS 13000 WHOSE BILL ID IS 800:
+============================================
+
+COMMAND: UPDATE TICKET SET AMOUNT=13000 WHERE BILL_ID=800;
+
+2 rows updated.
+
+SQL> SELECT AMOUNT,BILL_ID FROM TICKET;
+
+AMOUNT             BILL_ID
+--------------- ----------
+5000                   900
+13000                  800
+8000                   500
+13000                  800
+
+UPDATE THE AMOUNT AS DOUBLE IN TICKET:
+======================================
+
+COMMAND:UPDATE TICKET SET AMOUNT = AMOUNT * 2;
+
+4 rows updated.
+
+SQL> SELECT * FROM TICKET;
+
+ TICKET_ID AMOUNT          DATE_BOOK DATE_CANC NUM_SEATS  BOOK_ID    CANCEL_ID   FLIGHT_ID    BILL_ID     PSG_ID
+---------- --------------- --------- --------- ---------- ---------- ---------- ---------- ---------- ----------
+       501 10000           04-MAR-23           4          701                          501        700        101
+       502 4000            05-MAR-23           2          702                          502        800        102
+       503 16000           06-MAR-23           5          703                          501        500        103
+       504 20000           07-MAR-23           6          704                          502        601        104
+
+UPDATE BOOK ID AS 708 WHOSE TICKET ID IS 503:
+============================================
+
+COMMAND:UPDATE TICKET SET BOOK_ID = 708 WHERE TICKET_ID=503;
+
+1 row updated.
+
+SQL> SELECT * FROM TICKET;
+
+ TICKET_ID AMOUNT          DATE_BOOK DATE_CANC NUM_SEATS  BOOK_ID    CANCEL_ID   FLIGHT_ID    BILL_ID     PSG_ID
+---------- --------------- --------- --------- ---------- ---------- ---------- ---------- ---------- ----------
+       501 10000           04-MAR-23           4          701                          501        700        101
+       502 4000            05-MAR-23           2          702                          502        800        102
+       503 16000           06-MAR-23           5          708                          501        500        103
+       504 20000           07-MAR-23           6          704                          502        601        104
+
+
+UPDATE THE NUM SEATS AS 10 WHERE TICKET ID IS 704:
+=================================================
+
+COMMAND:UPDATE TICKET SET NUM_SEATS = 10 WHERE TICKET_ID=504;
+
+1 row updated.
+
+SQL> SELECT * FROM TICKET;
+
+ TICKET_ID AMOUNT          DATE_BOOK DATE_CANC NUM_SEATS  BOOK_ID    CANCEL_ID   FLIGHT_ID    BILL_ID     PSG_ID
+---------- --------------- --------- --------- ---------- ---------- ---------- ---------- ---------- ----------
+       501 10000           04-MAR-23           4          701                          501        700        101
+       502 4000            05-MAR-23           2          702                          502        800        102
+       503 16000           06-MAR-23           5          708                          501        500        103
+       504 20000           07-MAR-23           10         704                          502        601        104
+
+
+DELETE THE DETAILS FROM TABLE TICKET WHOSE BILL ID IS 500:
+=========================================================
+
+COMMAND: DELETE FROM TICKET WHERE BILL_ID=500;
+
+1 row deleted.
+
+SQL> SELECT AMOUNT,BILL_ID FROM TICKET;
+
+AMOUNT             BILL_ID
+--------------- ----------
+5000                   900
+13000                  800
+13000                  800
+
+DELETE ALL THE DATA FROM TICKET:
+================================
+
+COMMAND:DELETE FROM TICKET;
+
+4 rows deleted.
+
+SQL> SELECT * FROM TICKET;
+
+no rows selected
+
+
+=======================================================================================
+                        8.TICKET SEATS
+
+INSERT VALUES INTO THE TABLE TICKET_SEATS:
+=========================================
+
+COMMAND: INSERT INTO TICKET_SEATS VALUES(501,5);
+
+1 row created.
+
+DISPLAY ALL THE DEATILS FROM TICKET SEATS:
+=========================================
+
+SQL> SELECT * FROM TICKET_SEATS;
+
+ TICKET_ID      SEATS
+---------- ----------
+       501          5
+       502          2
+       504          6
+============================================================================================
+                        9.PASSENGER PHONE NUMBER
+
+INSERT VALUES INTO THE TABLE PASSENGER PHN NO:
+=============================================
+
+COMMAND: insert into passenger_phnno values(101,123456789);
+
+1 row created.
+
+SQL> select * from passenger_phnno;
+
+    PSG_ID    PSG_NUM
+---------- ----------
+       101  123456789
+
+UPDATE THE PHN NO AS 78787878 WHOSE ID IS 101:
+=============================================
+
+SQL> update passenger_phnno set psg_num=78787878 where psg_id=101;
+
+1 row updated.
+
+SQL> select * from passenger_phnno;
+
+    PSG_ID    PSG_NUM
+---------- ----------
+       101   78787878
+
+DELETE THE DETAILS WHOSE ID IS 101:
+==================================
+
+delete from passenger_phnno where psg_id=101;
+
+1 row deleted.
+
+SQL> select * from passenger_phnno;
+
+no rows selected
+
+==============================================================================================
+               10.FLIGHT SCHEDULE
+
+INSERT VALUES INTO THE TABLE FLIGHT SCHEDULE:
+==============================================
+
+insert into flight_schedule values(501,601);
+
+1 row created.
+
+SQL> select * from flight_schedule;
+
+ FLIGHT_ID SCHEDULE_ID
+---------- -----------
+       501         601
+===============================================================================================
+                        11. MANAGES
+
+INSERT VALUES INTO THE TABLE MANAGES:
+==============================================
+
+insert into manages values(201,501);
+
+1 row created.
+
+SQL> select * from manages;
+
+    EMP_ID  FLIGHT_ID
+---------- ----------
+       201        501
+
+===============================================================================================
+                        12. PROVIDES
+
+INSERT VALUES INTO THE TABLE MANAGES:
+=============================================
+
+ insert into manages values(201,501);
+
+1 row created.
+
+SQL> select * from manages;
+
+    EMP_ID  FLIGHT_ID
+---------- ----------
+       201        501
+
+===============================================================================================
+                        13.TRAVELS
+
+INSERT VALUES INTO THE TABLE TRAVELS:
+==============================================
+
+insert into travels values('14-sep-22',101,501);
+
+1 row created.
+
+SQL> select * from travels;
+
+TRA_DATE      PSG_ID  FLIGHT_ID
+--------- ---------- ----------
+14-SEP-22        101        501
+
+================================================================================================
+                        14.EMPLOYEE_MOBILE_NUMBER
+
+INSERT VALUES INTO THE TABLE EMPLOYEE MOBILE NO:
+=================================================
+insert into employee_mobile_no values(78787878,201);
+
+1 row created.
+
+SQL> select * from employee_mobile_no;
+
+EMP_MOBILE_NO     EMP_ID
+------------- ----------
+     78787878        201
+================================================================================================
