@@ -1,0 +1,295 @@
+
+
+CREATE  A VIEW FOR TABLE PASSENGER WITH ID GENDER AND NAME:
+===========================================================
+
+COMMAND:create view psg_view as select psg_id,name,gender from passenger;
+
+View created.
+
+SQL> select * from psg_view;
+
+    PSG_ID NAME                      GE
+---------- ------------------------- --
+       102 SHREE                     fm
+       101 nila                      m
+       103 rafi                      fm
+       104 riya                      fm
+       108 REENA                     fm
+       109 maggi                     m
+
+6 rows selected.
+--------------------------------------------------------------------------------------------------------
+CREATE A VIEW TO DISPLAY THE PSG ID,NAME,BILL ID FROM THE PASSENGERS WHO BOOKED THE TICKETS:
+============================================================================================
+COMMAND:CREATE OR REPLACE VIEW VIEW1 AS SELECT PSG_ID,NAME,BILL_ID FROM PASSENGER NATURAL JOIN TICKET;
+
+View created.
+
+SQL> SELECT * FROM VIEW1;
+
+    PSG_ID NAME                         BILL_ID
+---------- ------------------------- ----------
+       102 SHREE                            500
+       101 nila                             800
+       103 nila                             700
+       104 riya                             601
+----------------------------------------------------------------------------------------------------------
+ADD THE ATTRIBUTE EMAIL WITH THE EXISTING PASSENGER VIEW:
+==========================================================
+COMMAND: create or replace view psg_view as select psg_id,name,gender,psg_email from passenger;
+
+View created.
+
+SQL> select * from psg_view;
+
+    PSG_ID NAME                      GE PSG_EMAIL
+---------- ------------------------- -- --------------------
+       102 SHREE                     fm imaya@gmail.com
+       101 nila                      m  nila@gmail.com
+       103 rafi                      fm rafi@gmail.com
+       104 riya                      fm riya@gmail.com
+       108 REENA                     fm reena@gmail.com
+       109 maggi                     m  maggi@gmail.com
+
+6 rows selected.
+----------------------------------------------------------------------------------------------------------
+INSERT A VALUE INTO THE PASSENGER VIEW:
+=======================================
+COMMAND:Insert into psg_view values ('100','arjun','m','arjun@gmail.com');
+
+1 row created.
+
+SQL> select * from psg_view;
+
+    PSG_ID NAME                      GE PSG_EMAIL
+---------- ------------------------- -- --------------------
+       102 SHREE                     fm imaya@gmail.com
+       101 nila                      m  nila@gmail.com
+       103 rafi                      fm rafi@gmail.com
+       104 riya                      fm riya@gmail.com
+       108 REENA                     fm reena@gmail.com
+       109 maggi                     m  maggi@gmail.com
+       100 arjun                     m  arjun@gmail.com
+
+7 rows selected.
+-----------------------------------------------------------------------------------------------------------
+DELETE A RECORD FROM PASSENGER VIEW:
+===================================
+COMMAND:delete from psg_view where psg_id=108;
+
+1 row deleted.
+
+SQL> select * from psg_view;
+
+    PSG_ID NAME                      GE
+---------- ------------------------- --
+       102 SHREE                     fm
+       103 nila                      fm
+       104 riya                      fm
+
+SQL> select * from passenger;
+
+    PSG_ID NAME                         PSG_PWD ADDRESS              PSG_EMAIL
+          PSG_DOB   GE
+---------- ------------------------- ---------- -------------------- -------------------- --------- --
+       102 SHREE                           2478 Tuti                 imaya@gmail.com
+          12-JUL-90 fm
+       101 nila                            4444 Tvl                  nila@gmail.com
+          17-JUN-99 m
+       103 nila                           15554 Vnr                  rafi@gmail.com
+          19-MAR-96 fm
+       104 riya                           17978 madurai              riya@gmail.com
+          29-JUL-04 fm
+       109 maggi                           8900 vnr                  maggi@gmail.com
+          07-APR-20 m
+       105 ARJUN                           7890 VNR                  arjun@gmail.com
+          26-OCT-07 m
+
+6 rows selected.
+
+------------------------------------------------------------------------------------------------------------
+DELETE THE PASSENGER VIEW:
+=========================
+COMMAND:drop view psg_view;
+
+View dropped.
+
+SQL> select * from psg_view;
+select * from psg_view
+              *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+----------------------------------------------------------------------------------------------------------------
+CREATE A VIEW FOR PASSENGER ONLY WITH FEMALE PASSENGERS:
+=======================================================
+COMMAND: create view psg_view as select psg_id,name,gender from passenger where gender='fm';
+
+View created.
+
+SQL> select * from psg_view;
+
+    PSG_ID NAME                      GE
+---------- ------------------------- --
+       102 SHREE                     fm
+       103 rafi                      fm
+       104 riya                      fm
+       108 REENA                     fm
+---------------------------------------------------------------------------------------------------------------
+UPDATE THE NAME AS NILA WHOSE ID IS 103 IN THE PSG_VIEW:
+========================================================
+COMMAND:update psg_view set name='nila' where psg_id=103;
+
+1 row updated.
+
+SQL> select * from psg_view;
+
+    PSG_ID NAME                      GE
+---------- ------------------------- --
+       102 SHREE                     fm
+       103 nila                      fm
+       104 riya                      fm
+
+SQL> select * from passenger;
+
+    PSG_ID NAME                         PSG_PWD ADDRESS              PSG_EMAIL            PSG_DOB   GE
+---------- ------------------------- ---------- -------------------- -------------------- --------- --
+       102 SHREE                           2478 Tuti                 imaya@gmail.com      12-JUL-90 fm
+       101 nila                            4444 Tvl                  nila@gmail.com       17-JUN-99 m
+       103 nila                           15554 Vnr                  rafi@gmail.com       19-MAR-96 fm
+       104 riya                           17978 madurai              riya@gmail.com       29-JUL-04 fm
+       109 maggi                           8900 vnr                  maggi@gmail.com      07-APR-20 m
+       105 ARJUN                           7890 VNR                  arjun@gmail.com      26-OCT-07 m
+
+-----------------------------------------------------------------------------------------------------------------
+CREATE ANOTHER  VIEW WITH NAME AND GENDER USING THE PSG_VIEW:
+=============================================================
+COMMAND:create view sampleview as select name,gender from psg_view;
+
+View created.
+
+SQL> select * from sampleview;
+
+NAME                      GE
+------------------------- --
+SHREE                     fm
+nila                      fm
+riya                      fm
+REENA                     fm
+----------------------------------------------------------------------------------------------------------------------
+UNION THE ID,NAME AND GENDER OF PASSENGER AND PSG_VIEW:
+======================================================
+COMMAND: select psg_id,name,gender from psg_view union select psg_id,name,gender from passenger;
+
+    PSG_ID NAME                      GE
+---------- ------------------------- --
+       102 SHREE                     fm
+       103 nila                      fm
+       104 riya                      fm
+       108 REENA                     fm
+       101 nila                      m
+       109 maggi                     m
+
+6 rows selected.
+------------------------------------------------------------------------------------------------------------------------
+CREATE  A INDEX FOR NAME AND ID OF THE PASSENGER:
+================================================
+COMMAND:create index num on passenger(psg_id,name);
+
+Index created.
+
+SQL>SELECT * FROM PASSENGER ORDER BY NAME;
+
+OUTPUT:
+   PSG_ID NAME                         PSG_PWD ADDRESS              PSG_EMAIL            PSG_DOB   GE
+---------- ------------------------- ---------- -------------------- -------------------- --------- --
+       102 imaya                           1239 Tuti                 imaya@gmail.com      12-JUL-90 fm
+       101 nila                            2222 Tvl                  nila@gmail.com       17-JUN-99 fm
+       103 rafi                            7777 Vnr                  rafi@gmail.com       19-MAR-96 fm
+       104 riya                            8989 madurai              riya@gmail.com       20-JAN-97 fm
+
+-----------------------------------------------------------------------------------------------------------------------
+DROP THE INDEX:
+===============
+COMMAND: drop index num;
+
+Index dropped.
+------------------------------------------------------------------------------------------------------------------------
+CREATE ANOTHER VIEW FROM THE PASSENGER WHOSE NAME STARTS WITH 'NI':
+==================================================================
+COMMAND:create view view2 as select psg_id,name,psg_dob from passenger where name like 'ni%' with check option;
+
+View created.
+
+SQL> select * from view2;
+
+    PSG_ID NAME                      PSG_DOB
+---------- ------------------------- ---------
+       101 nila                      17-JUN-99
+       103 nila                      19-MAR-96
+-----------------------------------------------------------------------------------------------------------------------
+CREATE ANOTHER VIEW WITH THE PSG_ID , NAME AND GENDER WHO HAVE BOOKED THE TICKET:
+===================================================================================
+COMMAND:create view view4 as select name,psg_id,gender from passenger s where exists (select psg_id from ticket a where a.psg_id=s.psg_id);
+
+View created.
+
+SQL> select * from view4;
+
+NAME                          PSG_ID GE
+------------------------- ---------- --
+nila                             101 m
+SHREE                            102 fm
+nila                             103 fm
+riya                             104 fm
+---------------------------------------------------------------------------------------------------------------------------
+CREATE A VIEW WITH TICKET DETAILS FOR THE TICKETS WHICH ARE PAYED:
+=================================================================
+COMMAND: create view view5 as select *from ticket s where exists (select  *from payment a where a.bill_id=s.bill_id);
+
+View created.
+
+SQL> select * from view5;
+
+ TICKET_ID AMOUNT          DATE_BOOK DATE_CANC NUM_SEATS  BOOK_ID    CANCEL_ID
+---------- --------------- --------- --------- ---------- ---------- ----------
+ FLIGHT_ID    BILL_ID     PSG_ID
+---------- ---------- ----------
+       501 5000            04-MAR-23           4          701
+       501        800        101
+
+       502 2000            05-MAR-23           2          702
+       502        500        102
+
+       503 8000            06-MAR-23           5          703
+       501        700        103
+------------------------------------------------------------------------------------------------------------------------------
+CREATE A VIEW  WITH BILL ID FROM THE TICKETS WHICH HAS DONE THE PAYMENT:
+=======================================================================
+COMMAND: create view views as select bill_id from (select ticket.bill_id from ticket,payment where payment.bill_id=ticket.bill_id);
+
+View created.
+
+SQL> select * from views;
+
+   BILL_ID
+----------
+       800
+       500
+       700
+       601
+------------------------------------------------------------------------------------------------------------------------------------------
+CREATE A VIEW WITH ID , NAME OF PASSENGER AND BILL ID AND NO. OF SEATS OF TICKET WITH THE PASSENGERS WHO BOOKED THE TICKET:
+==========================================================================================================================
+COMMAND:create view view8 as select psg_id,name,bill_id,num_seats from (select passenger.psg_id,passenger.name,ticket.bill_id,ticket.num_seats from passenger,ticket where passenger.psg_id = ticket.psg_id);
+
+View created.
+
+SQL> select  * from view8;
+
+    PSG_ID NAME                         BILL_ID NUM_SEATS
+---------- ------------------------- ---------- ----------
+       101 nila                             800 4
+       102 SHREE                            500 2
+       103 nila                             700 5
+       104 riya                             601 6
